@@ -68,19 +68,38 @@ class Snake {
             x: 0,
             y: 0
         };
-        this.dest = {
+        this.destPos = {
             x:this.head.x,
             y:this.head.y
         }
         this.distToTravel = {
-            x:this.dest.x,
-            y:this.dest.y
+            x:this.destPos.x,
+            y:this.destPos.y
         }
         this.body = [this.head];
     }
+    moveTowards(destPos, speed) {
+        this.distToTavel.x = destPos.x - this.head.x;
+        this.distToTavel.y = destPos.y - this.head.y;
+        var dist = Math.hypot(this.distToTavel.x, this.distToTavel.y);
+        if (dist <= speed) {
+            this.pos.x = destPos.x;
+            this.pos.y = destPos.y;
+        } else {
+            const stepX = this.distToTavel.x / dist;
+            const stepY = this.distToTavel.y / dist;
+            this.pos.x += stepX * speed;
+            this.pos.y += stepY * speed;
+
+            this.distToTavel.x = destPos.x - this.head.x;
+            this.distToTavel.y = destPos.y - this.head.y;
+            dist = Math.hypot(this.distToTavel.x, this.distToTavel.y);
+        }
+        return dist;
+    }
     update() {
-        let newX = this.head.x;
-        let newY = this.head.y;
+        let newX = this.destPos.x;
+        let newY = this.destPos.y;
         if (this.input.lastKey === UP) {
             newY--;
         } 
