@@ -16,10 +16,8 @@ function insideMap(x, y) {
     return (x >= 0 && x < COLS && y >= 0 && y < ROWS);
 }
 
-function insideTail(x, y, body) {
-    return body.some(segment => {
-        return (segment.x === x && segment.y === y);
-    });
+function insideTail(x, y, map) {
+    return (map.get(x,y) === 1);
 }
 
 
@@ -88,7 +86,7 @@ export class Snake {
                 newX++;
             }
             // Move
-            if (insideMap(newX, newY) && !insideTail(newX, newY, this.body)) {
+            if (insideMap(newX, newY) && !insideTail(newX, newY, this.game.map)) {
                 this.destPos.x = newX;
                 this.destPos.y = newY;
                 this.body.unshift({ x: newX, y: newY });
@@ -100,6 +98,7 @@ export class Snake {
                     const tail = this.body.pop();
                     this.game.map.set(tail.x, tail.y, 0);
                 }
+                this.game.socket.send(JSON.stringify(this.game.map.map));
             }
         }
     }

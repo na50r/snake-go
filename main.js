@@ -34,13 +34,20 @@ function drawGrid(ctx) {
     }
 }
 
+
+
 class Game {
     constructor() {
+        this.socket = new WebSocket('ws://localhost:8080/ws');
         this.map = new Map(this);
         this.input = new Input(this);
         this.snake = new Snake(this);
         this.food = new Food(this);
         this.debug = false;
+        this.socket.onmessage = (event) => {
+            console.log(event.data);
+            this.map.map = JSON.parse(event.data);
+        };
     }
     toggleDebug() {
         this.debug = !this.debug;
