@@ -8,3 +8,8 @@
     /* width: 80vmin;
     height: 80vmin; */
 }
+#app{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}

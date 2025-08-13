@@ -57,6 +57,8 @@ class Game {
 
 var aniID;
 var lastTime = 0;
+var paused = false;
+var currentLoop;
 function createGameLoop() {
     const game = new Game();
     const gameLoop = (timeStamp) => {
@@ -69,15 +71,24 @@ function createGameLoop() {
 }
 
 window.addEventListener('load', () => {
-    const gameLoop = createGameLoop();
-    requestAnimationFrame(gameLoop);
+    currentLoop = createGameLoop();
+    requestAnimationFrame(currentLoop);
 })
 
 startBtn.addEventListener('click', () => {
-    const gameLoop = createGameLoop();
-    requestAnimationFrame(gameLoop);
+    if (aniID) {
+        cancelAnimationFrame(aniID);
+    }
+    currentLoop = createGameLoop();
+    requestAnimationFrame(currentLoop);
 });
 stopBtn.addEventListener('click', () => {
+    if (paused) {
+        paused = false;
+        aniID = requestAnimationFrame(currentLoop);
+        return;
+    }
     cancelAnimationFrame(aniID);
+    paused = true;
 })
 
