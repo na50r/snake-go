@@ -18,6 +18,12 @@ canvas.width = GAME_WIDTH;
 canvas.height = GAME_HEIGHT;
 app.append(canvas, startBtn, stopBtn);
 
+function createMap() {
+    const size = COLS * ROWS;
+    const emptyMap = new Array(size).fill(0);
+    return emptyMap;
+}
+
 function borderCollision(x, y) {
     return (x >= 0 && x < COLS && y >= 0 && y < ROWS);
 }
@@ -31,84 +37,91 @@ function drawGrid(ctx) {
     }
 }
 
-class Player {
-    constructor(input) {
-        this.input = input;
-        this.pos = {
-            x: 0,
-            y: 0
-        };
-        this.destPos = {
-            x: this.pos.x,
-            y: this.pos.y
-        };
-        this.distToTavel = {
-            x: 0,
-            y: 0
-        }
-        this.speed = 0.1;
+class Map {
+    constructor(game) {
+        this.game = game;
+        this.map = createMap();
     }
-    moveTowards(destPos, speed) {
-        this.distToTavel.x = destPos.x - this.pos.x;
-        this.distToTavel.y = destPos.y - this.pos.y;
-        var dist = Math.hypot(this.distToTavel.x, this.distToTavel.y);
-        if (dist <= speed) {
-            this.pos.x = destPos.x;
-            this.pos.y = destPos.y;
-        } else {
-            const stepX = this.distToTavel.x / dist;
-            const stepY = this.distToTavel.y / dist;
-            this.pos.x += stepX * speed;
-            this.pos.y += stepY * speed;
-
-            this.distToTavel.x = destPos.x - this.pos.x;
-            this.distToTavel.y = destPos.y - this.pos.y;
-            dist = Math.hypot(this.distToTavel.x, this.distToTavel.y);
-        }
-        return dist;
+    set(x, y, value) {
+        this.map[y * COLS + x] = value;
     }
-    update(deltaTime) {
-        let newX = this.destPos.x;
-        let newY = this.destPos.y;
-
-        const scaledSpeed = this.speed; // * deltaTime;
-        const dist = this.moveTowards(this.destPos, scaledSpeed);
-        const arrived = dist <= this.speed;
-        if (arrived) {
-            if (this.input.lastKey === UP) {
-                newY--;
-            } else if (this.input.lastKey === DOWN) {
-                newY++;
-            } else if (this.input.lastKey === LEFT) {
-                newX--;
-            } else if (this.input.lastKey === RIGHT) {
-                newX++;
-            }
-            if (borderCollision(newX, newY)) {
-                this.destPos.x = newX;
-                this.destPos.y = newY;
-            }
-        }
+    get(x, y) {
+        return this.map[y * COLS + x];
     }
     draw(ctx) {
-        ctx.fillStyle = 'white';
-        ctx.fillRect(this.pos.x * TILE_SIZE, this.pos.y * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+        for (let c = 0; c < COLS; c++) {
+            for (let r = 0; r < ROWS; r++) {
+                if (this.get(c, r) === 1) {
+                    ctx.fillStyle = 'white';
+                    ctx.fillRect(c * TILE_SIZE, r * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                }
+            }
+        }
+    }
+}
+
+class Snake {
+    constructor(game) {
+        this.game = game;
+        this.input = this.game.input;
+        this.head = {
+            x: 0,
+            y: 0
+        };
+        this.dest = {
+            x:this.head.x,
+            y:this.head.y
+        }
+        this.distToTravel = {
+            x:this.dest.x,
+            y:this.dest.y
+        }
+        this.body = [this.head];
+    }
+    update() {
+        let newX = this.head.x;
+        let newY = this.head.y;
+        if (this.input.lastKey === UP) {
+            newY--;
+        } 
+        if (this.input.lastKey === DOWN) {
+            newY++;
+        } 
+        if (this.input.lastKey === LEFT) {
+            newX--;
+        } 
+        if (this.input.lastKey === RIGHT) {
+            newX++;
+        }
+        if ((this.input.lastKey === UP || this.input.lastKey === DOWN || this.input.lastKey === LEFT || this.input.lastKey === RIGHT) && borderCollision(newX, newY)) {
+            this.head.x = newX;
+            this.head.y = newY;
+            this.body.unshift({ x: newX, y: newY });
+            this.game.map.set(newX, newY, 1);
+            if (this.body.length > 4) {
+                const tail = this.body.pop();
+                this.game.map.set(tail.x, tail.y, 0);
+            }
+        }
     }
 }
 var aniID;
-var lastTime = 0;
+class Game {
+    constructor() {
+        this.map = new Map(this);
+        this.input = new Input();
+        this.player = new Snake(this);
+    }
+}
 
 function createGameLoop() {
-    const input = new Input();
-    const player = new Player(input);
-    const gameLoop = (timeStamp) => {
+    const game = new Game();
+    const gameLoop = () => {
         aniID = requestAnimationFrame(gameLoop);
-        const deltaTime = timeStamp - lastTime;
-        lastTime = timeStamp;
         ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
         drawGrid(ctx);
-        player.update(deltaTime);
-        player.draw(ctx);
+        game.player.update();
+        game.map.draw(ctx);
     };
     return gameLoop;
 }
