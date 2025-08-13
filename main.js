@@ -18,15 +18,29 @@ canvas.width = GAME_WIDTH;
 canvas.height = GAME_HEIGHT;
 app.append(canvas, startBtn, stopBtn);
 
+const OPPOSITES = {
+    [UP]: DOWN,
+    [DOWN]: UP,
+    [LEFT]: RIGHT,
+    [RIGHT]: LEFT
+}
+
+function validMove(key, lastKey) {
+    return (key !== OPPOSITES[lastKey]);
+}
 function createMap() {
     const size = COLS * ROWS;
     const emptyMap = new Array(size).fill(0);
     return emptyMap;
 }
 
-function borderCollision(x, y) {
+function insideMap(x, y) {
     return (x >= 0 && x < COLS && y >= 0 && y < ROWS);
 }
+
+function validInput(key) {
+    return (key === UP || key === DOWN || key === LEFT || key === RIGHT);
+} 
 
 function drawGrid(ctx) {
     ctx.strokeStyle = 'white';
@@ -69,62 +83,71 @@ class Snake {
             y: 0
         };
         this.destPos = {
-            x:this.head.x,
-            y:this.head.y
+            x: this.head.x,
+            y: this.head.y
         }
         this.distToTravel = {
-            x:this.destPos.x,
-            y:this.destPos.y
+            x: this.destPos.x,
+            y: this.destPos.y
         }
         this.body = [this.head];
+        this.speed = 15;
+        this.lastMove = RIGHT;
     }
     moveTowards(destPos, speed) {
-        this.distToTavel.x = destPos.x - this.head.x;
-        this.distToTavel.y = destPos.y - this.head.y;
-        var dist = Math.hypot(this.distToTavel.x, this.distToTavel.y);
+        this.distToTravel.x = destPos.x - this.head.x;
+        this.distToTravel.y = destPos.y - this.head.y;
+        var dist = Math.hypot(this.distToTravel.x, this.distToTravel.y);
         if (dist <= speed) {
-            this.pos.x = destPos.x;
-            this.pos.y = destPos.y;
+            this.head.x = destPos.x;
+            this.head.y = destPos.y;
         } else {
-            const stepX = this.distToTavel.x / dist;
-            const stepY = this.distToTavel.y / dist;
-            this.pos.x += stepX * speed;
-            this.pos.y += stepY * speed;
+            const stepX = this.distToTravel.x / dist;
+            const stepY = this.distToTravel.y / dist;
+            this.head.x += stepX * speed;
+            this.head.y += stepY * speed;
 
-            this.distToTavel.x = destPos.x - this.head.x;
-            this.distToTavel.y = destPos.y - this.head.y;
-            dist = Math.hypot(this.distToTavel.x, this.distToTavel.y);
+            this.distToTravel.x = destPos.x - this.head.x;
+            this.distToTravel.y = destPos.y - this.head.y;
+            dist = Math.hypot(this.distToTravel.x, this.distToTravel.y);
         }
         return dist;
     }
-    update() {
+    update(deltaTime) {
         let newX = this.destPos.x;
         let newY = this.destPos.y;
-        if (this.input.lastKey === UP) {
-            newY--;
-        } 
-        if (this.input.lastKey === DOWN) {
-            newY++;
-        } 
-        if (this.input.lastKey === LEFT) {
-            newX--;
-        } 
-        if (this.input.lastKey === RIGHT) {
-            newX++;
-        }
-        if ((this.input.lastKey === UP || this.input.lastKey === DOWN || this.input.lastKey === LEFT || this.input.lastKey === RIGHT) && borderCollision(newX, newY)) {
-            this.head.x = newX;
-            this.head.y = newY;
-            this.body.unshift({ x: newX, y: newY });
-            this.game.map.set(newX, newY, 1);
-            if (this.body.length > 4) {
-                const tail = this.body.pop();
-                this.game.map.set(tail.x, tail.y, 0);
+        const scaledSpeed = this.speed * (deltaTime / 1000);
+        const dist = this.moveTowards(this.destPos, scaledSpeed);
+        if (dist <= scaledSpeed) {
+            // Listen for directions
+            if (this.input.lastKey === UP) {
+                newY--;
+            }
+            if (this.input.lastKey === DOWN) {
+                newY++;
+            }
+            if (this.input.lastKey === LEFT) {
+                newX--;
+            }
+            if (this.input.lastKey === RIGHT) {
+                newX++;
+            }
+            // Move
+            if (validInput(this.input.lastKey) && insideMap(newX, newY) && validMove(this.input.lastKey, this.lastMove)) {
+                this.destPos.x = newX;
+                this.destPos.y = newY;
+                this.body.unshift({ x: newX, y: newY });
+                this.game.map.set(newX, newY, 1);
+                this.lastMove = this.input.lastKey;
+                if (this.body.length > 4) {
+                    const tail = this.body.pop();
+                    this.game.map.set(tail.x, tail.y, 0);
+                }
             }
         }
     }
 }
-var aniID;
+
 class Game {
     constructor() {
         this.map = new Map(this);
@@ -133,13 +156,17 @@ class Game {
     }
 }
 
+var aniID;
+var lastTime = 0;
 function createGameLoop() {
     const game = new Game();
-    const gameLoop = () => {
+    const gameLoop = (timeStamp) => {
         aniID = requestAnimationFrame(gameLoop);
+        const deltaTime = timeStamp - lastTime;
+        lastTime = timeStamp;
         ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
         drawGrid(ctx);
-        game.player.update();
+        game.player.update(deltaTime);
         game.map.draw(ctx);
     };
     return gameLoop;
