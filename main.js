@@ -14,9 +14,9 @@ const canvas = document.createElement('canvas');
 canvas.id = 'canvasX';
 const ctx = canvas.getContext('2d');
 
-export const COLS = 32
-export const ROWS = 32
-export const TILE_SIZE = 16;
+export const COLS = 8
+export const ROWS = 8
+export const TILE_SIZE = 64;
 export const GAME_WIDTH = COLS * TILE_SIZE;
 export const GAME_HEIGHT = ROWS * TILE_SIZE;
 
