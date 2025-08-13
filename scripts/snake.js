@@ -16,6 +16,12 @@ function insideMap(x, y) {
     return (x >= 0 && x < COLS && y >= 0 && y < ROWS);
 }
 
+function insideTail(x, y, body) {
+    return body.some(segment => {
+        return (segment.x === x && segment.y === y);
+    });
+}
+
 
 export class Snake {
     constructor(game) {
@@ -82,7 +88,7 @@ export class Snake {
                 newX++;
             }
             // Move
-            if (insideMap(newX, newY)) {
+            if (insideMap(newX, newY) && !insideTail(newX, newY, this.body)) {
                 this.destPos.x = newX;
                 this.destPos.y = newY;
                 this.body.unshift({ x: newX, y: newY });
