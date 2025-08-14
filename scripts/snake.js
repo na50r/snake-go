@@ -20,15 +20,18 @@ function insideTail(x, y, map) {
     return (map.get(x,y) === 1);
 }
 
+function setStart() {
+    const startPos = [{x: 0, y: 0}, {x: 31, y: 0}, {x: 0, y: 31}, {x: 31, y: 31}];
+    const startDir = [RIGHT, LEFT, RIGHT, LEFT];
+    const index = Math.floor(Math.random() * 4);
+    return { pos: startPos[index], dir: startDir[index] };
+}
 
 export class Snake {
     constructor(game) {
         this.game = game;
         this.input = this.game.input;
-        this.head = {
-            x: 0,
-            y: 0
-        };
+        ({ pos: this.head, dir: this.dir } = setStart());
         this.destPos = {
             x: this.head.x,
             y: this.head.y
@@ -39,7 +42,6 @@ export class Snake {
         }
         this.body = [this.head];
         this.speed = 15;
-        this.dir = RIGHT;
         this.size = 4;
     }
     getBody() {
@@ -104,7 +106,11 @@ export class Snake {
                     const tail = this.body.pop();
                 //     this.game.map.set(tail.x, tail.y, 0);
                 }
-                this.game.socket.send(JSON.stringify(this.getBody()));
+                const msg = {
+                    type: "positions",
+                    payload: this.getBody()
+                }
+                this.game.socket.send(JSON.stringify(msg));
             }
         }
     }

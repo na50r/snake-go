@@ -9,6 +9,8 @@ import (
 	"math/rand"
 )
 
+// Based on https://www.youtube.com/watch?v=y036l6pvVEs
+
 type Message struct {
 	Type string `json:"type"`
 	Payload interface{} `json:"payload"`
@@ -23,15 +25,23 @@ type Client struct {
 func (c *Client) read() {
     defer c.socket.Close()
     for {
-        _, msg, err := c.socket.ReadMessage()
+        _, m, err := c.socket.ReadMessage()
         if err != nil {
             return
         }
-        var positions []int
-        if err := json.Unmarshal(msg, &positions); err != nil {
+		var msg Message
+        if err := json.Unmarshal(m, &msg); err != nil {
+			log.Println("Error unmarshalling message:", err)
             continue
         }
-        c.room.update <- snakeUpdate{client: c, body: positions}
+		if msg.Type == "positions" {
+			raw := msg.Payload.([]interface{})
+			positions := make([]int, len(raw))
+			for i, v := range raw {
+				positions[i] = int(v.(float64)) 
+			}
+			c.room.update <- snakeUpdate{c, positions}
+		}
     }
 }
 
