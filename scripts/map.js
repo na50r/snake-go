@@ -9,13 +9,13 @@ function createMap() {
 export class Map {
     constructor(game) {
         this.game = game;
-        this.map = createMap();
+        this.data = createMap();
     }
     set(x, y, value) {
-        this.map[y * COLS + x] = value;
+        this.data[y * COLS + x] = value;
     }
     get(x, y) {
-        return this.map[y * COLS + x];
+        return this.data[y * COLS + x];
     }
     draw(ctx) {
         for (let c = 0; c < COLS; c++) {

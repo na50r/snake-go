@@ -1,8 +1,6 @@
 import { Input } from './scripts/input.js';
 import { Map } from './scripts/map.js';
 import { Snake } from './scripts/snake.js';
-import { Food } from './scripts/food.js';
-
 
 const app = document.getElementById('app');
 const startBtn = document.createElement('button');
@@ -14,16 +12,15 @@ const canvas = document.createElement('canvas');
 canvas.id = 'canvasX';
 const ctx = canvas.getContext('2d');
 
-export const COLS = 8
-export const ROWS = 8
-export const TILE_SIZE = 64;
+export const COLS = 32
+export const ROWS = 32
+export const TILE_SIZE = 16;
 export const GAME_WIDTH = COLS * TILE_SIZE;
 export const GAME_HEIGHT = ROWS * TILE_SIZE;
 
 canvas.width = GAME_WIDTH;
 canvas.height = GAME_HEIGHT;
 app.append(canvas, startBtn, stopBtn);
-
 
 function drawGrid(ctx) {
     ctx.strokeStyle = 'white';
@@ -34,19 +31,18 @@ function drawGrid(ctx) {
     }
 }
 
-
-
 class Game {
     constructor() {
         this.socket = new WebSocket('ws://localhost:8080/ws');
         this.map = new Map(this);
         this.input = new Input(this);
         this.snake = new Snake(this);
-        this.food = new Food(this);
         this.debug = false;
         this.socket.onmessage = (event) => {
-            console.log(event.data);
-            this.map.map = JSON.parse(event.data);
+            const msg = JSON.parse(event.data);
+            if (msg.type === 'map') {
+                this.map.data = msg.payload;
+            }
         };
     }
     toggleDebug() {
@@ -57,7 +53,6 @@ class Game {
         ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
         if (this.debug) drawGrid(ctx);
         this.snake.update(deltaTime);
-        this.food.draw(ctx);
         this.map.draw(ctx);
     };
 }
@@ -65,7 +60,7 @@ class Game {
 var aniID;
 var lastTime = 0;
 var paused = false;
-var currentLoop;
+var currentState = { game: null, loop: null }
 function createGameLoop() {
     const game = new Game();
     const gameLoop = (timeStamp) => {
@@ -74,25 +69,31 @@ function createGameLoop() {
         lastTime = timeStamp;
         game.render(ctx, deltaTime);
     };
-    return gameLoop;
+    return {game: game, loop: gameLoop };
 }
 
 window.addEventListener('load', () => {
-    currentLoop = createGameLoop();
-    requestAnimationFrame(currentLoop);
+    currentState = createGameLoop();
+    requestAnimationFrame(currentState.loop);
 })
 
 startBtn.addEventListener('click', () => {
     if (aniID) {
         cancelAnimationFrame(aniID);
     }
-    currentLoop = createGameLoop();
-    requestAnimationFrame(currentLoop);
+    if (currentState.game) {
+        currentState.game.socket.close();
+        currentState.socket = null;
+        currentState.game = null;
+
+    }
+    currentState = createGameLoop();
+    requestAnimationFrame(currentState.loop);
 });
 stopBtn.addEventListener('click', () => {
     if (paused) {
         paused = false;
-        aniID = requestAnimationFrame(currentLoop);
+        aniID = requestAnimationFrame(currentState.loop);
         return;
     }
     cancelAnimationFrame(aniID);

@@ -42,6 +42,15 @@ export class Snake {
         this.dir = RIGHT;
         this.size = 4;
     }
+    getBody() {
+        const pos = []
+        this.body.forEach((part) => {
+            pos.push(COLS * part.y + part.x);
+        });
+        return pos;
+    }
+
+    // Make movmet smooth, allow adjustment of speed with deltaTime
     moveTowards(destPos, speed) {
         this.distToTravel.x = destPos.x - this.head.x;
         this.distToTravel.y = destPos.y - this.head.y;
@@ -90,15 +99,12 @@ export class Snake {
                 this.destPos.x = newX;
                 this.destPos.y = newY;
                 this.body.unshift({ x: newX, y: newY });
-                if (this.game.map.get(newX, newY) === 2) {
-                    this.game.food.update()
-                }
-                this.game.map.set(newX, newY, 1);
+                //this.game.map.set(newX, newY, 1);
                 if (this.body.length > this.size) {
                     const tail = this.body.pop();
-                    this.game.map.set(tail.x, tail.y, 0);
+                //     this.game.map.set(tail.x, tail.y, 0);
                 }
-                this.game.socket.send(JSON.stringify(this.game.map.map));
+                this.game.socket.send(JSON.stringify(this.getBody()));
             }
         }
     }
