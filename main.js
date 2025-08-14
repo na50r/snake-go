@@ -5,8 +5,9 @@ import { Snake } from './scripts/snake.js';
 const app = document.getElementById('app');
 const startBtn = document.createElement('button');
 const stopBtn = document.createElement('button');
-startBtn.innerText = 'Start';
-stopBtn.innerText = 'Stop';
+startBtn.innerText = 'Respawn';
+stopBtn.innerText = 'Pause';
+
 const canvas = document.createElement('canvas');
 
 canvas.id = 'canvasX';
@@ -33,6 +34,7 @@ function drawGrid(ctx) {
 
 class Game {
     constructor() {
+        this.over = false;
         this.socket = new WebSocket('ws://localhost:8080/ws');
         this.map = new Map(this);
         this.input = new Input(this);
@@ -45,6 +47,9 @@ class Game {
             }
             if (msg.type === 'grow') {
                 this.snake.size += 1;
+            }
+            if (msg.type === "death") {
+                this.over = true;
             }
         };
     }
@@ -60,6 +65,13 @@ class Game {
     };
 }
 
+function killGame(game) {
+    game.socket.close();
+    game.socket = null;
+    game = null;
+}
+
+
 var aniID;
 var lastTime = 0;
 var paused = false;
@@ -71,6 +83,12 @@ function createGameLoop() {
         const deltaTime = timeStamp - lastTime;
         lastTime = timeStamp;
         game.render(ctx, deltaTime);
+        if (game.over) {
+            alert('You died!');
+            cancelAnimationFrame(aniID);
+            killGame(game);
+            window.location.reload();
+        }
     };
     return {game: game, loop: gameLoop };
 }
@@ -85,10 +103,7 @@ startBtn.addEventListener('click', () => {
         cancelAnimationFrame(aniID);
     }
     if (currentState.game) {
-        currentState.game.socket.close();
-        currentState.socket = null;
-        currentState.game = null;
-
+        killGame(currentState.game);
     }
     currentState = createGameLoop();
     requestAnimationFrame(currentState.loop);
@@ -96,10 +111,12 @@ startBtn.addEventListener('click', () => {
 stopBtn.addEventListener('click', () => {
     if (paused) {
         paused = false;
+        stopBtn.innerText = 'Pause';
         aniID = requestAnimationFrame(currentState.loop);
         return;
     }
     cancelAnimationFrame(aniID);
+    stopBtn.innerText = 'Resume';
     paused = true;
 })
 

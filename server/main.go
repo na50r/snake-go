@@ -74,6 +74,23 @@ func (f *Food) check(snakes map[*Client][]int, eaten chan *Client) {
 	}
 }
 
+
+func checkDeath(snakes map[*Client][]int, death chan *Client) {
+	for cli, positions := range snakes {
+		head := positions[0]
+		for other, positions := range snakes {
+			if cli == other {
+				continue
+			}
+			for _, idx := range positions {
+				if idx == head {
+					death <- cli
+				}
+			}
+		}
+	}
+}
+
 func NewFood() *Food {
 	f := &Food{snakes: make(map[*Client][]int),
 		}
@@ -90,6 +107,7 @@ type Room struct {
 	update chan snakeUpdate
 	food *Food
 	eaten chan *Client
+	death chan *Client
 }
 
 type snakeUpdate struct {
@@ -107,6 +125,7 @@ func NewRoom() *Room {
 		update: make(chan snakeUpdate),
 		food: NewFood(),
 		eaten: make(chan *Client),
+		death: make(chan *Client),
 	}
 }
 
@@ -140,6 +159,7 @@ func (r *Room) run() {
         case upd := <-r.update:
             r.snakes[upd.client] = upd.body
 			go r.food.check(r.snakes, r.eaten)
+			go checkDeath(r.snakes, r.death)
             gameMap := drawMap(r.snakes, r.food)
             data, _ := json.Marshal(Message{Type: "map", Payload: gameMap})
             for cli := range r.clients {
@@ -152,6 +172,14 @@ func (r *Room) run() {
 			log.Printf("Food eaten %v", cli)
 			r.food.generate(32 * 32)
 			data, _ := json.Marshal(Message{Type: "grow", Payload: nil})
+			select {
+				case cli.receive <- data:
+				default:
+			}
+		case cli := <-r.death:
+			log.Printf("Snake died %v", cli)
+			delete(r.snakes, cli)
+			data, _ := json.Marshal(Message{Type: "death", Payload: nil})
 			select {
 				case cli.receive <- data:
 				default:

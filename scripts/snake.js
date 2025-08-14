@@ -97,7 +97,7 @@ export class Snake {
                 newX++;
             }
             // Move
-            if (insideMap(newX, newY) && !insideTail(newX, newY, this.game.map)) {
+            if (insideMap(newX, newY)) {
                 this.destPos.x = newX;
                 this.destPos.y = newY;
                 this.body.unshift({ x: newX, y: newY });
