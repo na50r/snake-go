@@ -18,3 +18,6 @@ Then run the client with VSCode Live Server extension or alike.
 * WebSockets (Gorilla)
 
 
+## References
+* [Gorilla WebSockets](https://www.youtube.com/watch?v=y036l6pvVEs)
+* [PixelArt Game Dev (Tiles, Movement)](https://www.youtube.com/watch?v=3OpjL1cFMtg)

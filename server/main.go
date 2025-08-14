@@ -9,8 +9,6 @@ import (
 	"math/rand"
 )
 
-// Based on https://www.youtube.com/watch?v=y036l6pvVEs
-
 type Message struct {
 	Type string `json:"type"`
 	Payload interface{} `json:"payload"`
