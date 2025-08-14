@@ -43,6 +43,9 @@ class Game {
             if (msg.type === 'map') {
                 this.map.data = msg.payload;
             }
+            if (msg.type === 'grow') {
+                this.snake.size += 1;
+            }
         };
     }
     toggleDebug() {

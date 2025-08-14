@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/websocket"
+	"math/rand"
 )
 
 type Message struct {
@@ -44,6 +45,32 @@ func (c *Client) write() {
 	}
 }
 
+type Food struct {
+	position int
+	snakes map[*Client][]int
+}
+
+func (f *Food) generate(mapSize int) {
+	f.position = rand.Intn(mapSize)
+}
+
+func (f *Food) check(snakes map[*Client][]int, eaten chan *Client) {
+	for cli, positions := range snakes {
+		for _, idx := range positions {
+			if idx == f.position {
+				eaten <- cli
+			}
+		}
+	}
+}
+
+func NewFood() *Food {
+	f := &Food{snakes: make(map[*Client][]int),
+		}
+	f.generate(32 * 32)
+	return f
+}
+
 type Room struct {
 	clients map[*Client]bool
 	snakes map[*Client][]int // positions of snakes on map
@@ -51,6 +78,8 @@ type Room struct {
 	leave   chan *Client
 	forward chan []byte
 	update chan snakeUpdate
+	food *Food
+	eaten chan *Client
 }
 
 type snakeUpdate struct {
@@ -66,10 +95,12 @@ func NewRoom() *Room {
 		forward: make(chan []byte),
 		snakes: make(map[*Client][]int),
 		update: make(chan snakeUpdate),
+		food: NewFood(),
+		eaten: make(chan *Client),
 	}
 }
 
-func drawMap(snakes map[*Client][]int) []int {
+func drawMap(snakes map[*Client][]int, food *Food) []int {
 	gameMap := make([]int, 32 * 32)
 	for _, positions := range snakes {
 		for _, idx := range positions {
@@ -78,7 +109,8 @@ func drawMap(snakes map[*Client][]int) []int {
 			}
 		}
 	}
-	log.Println(gameMap)
+	gameMap[food.position] = 2
+	//log.Println(gameMap)
 	return gameMap
 }
 
@@ -97,7 +129,8 @@ func (r *Room) run() {
 
         case upd := <-r.update:
             r.snakes[upd.client] = upd.body
-            gameMap := drawMap(r.snakes)
+			go r.food.check(r.snakes, r.eaten)
+            gameMap := drawMap(r.snakes, r.food)
             data, _ := json.Marshal(Message{Type: "map", Payload: gameMap})
             for cli := range r.clients {
                 select {
@@ -105,6 +138,14 @@ func (r *Room) run() {
                 default:
                 }
             }
+		case cli := <-r.eaten:
+			log.Printf("Food eaten %v", cli)
+			r.food.generate(32 * 32)
+			data, _ := json.Marshal(Message{Type: "grow", Payload: nil})
+			select {
+				case cli.receive <- data:
+				default:
+			}
         }
     }
 }
