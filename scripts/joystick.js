@@ -1,6 +1,7 @@
 import { UP, DOWN, LEFT, RIGHT } from './input.js';
 
-function connectInput(btn, input, direction, indicators) {
+function connectInput(btn, input, direction) {
+    // Links input to buttons
     btn.addEventListener("mousedown", () => input.keyPressed(direction));
     btn.addEventListener("mouseup", () => input.keyReleased(direction));
     btn.addEventListener("mouseleave", () => input.keyReleased(direction));
@@ -8,7 +9,6 @@ function connectInput(btn, input, direction, indicators) {
     btn.addEventListener("touchstart", (e) => {
         e.preventDefault(); 
         input.keyPressed(direction);
-        indicators[direction].classList.add('active');
     });
     btn.addEventListener("touchend", () => input.keyReleased(direction));
     btn.addEventListener("touchcancel", () => input.keyReleased(direction));
@@ -27,13 +27,13 @@ function createJoystickDisplay() {
     directions.forEach(dir => {
         const div = document.createElement('div');
         div.classList.add('joystick-display', dir);
+        // TODO: Replace with images
         const arrows = { UP: '^', DOWN: 'v', LEFT: '<', RIGHT: '>' };
         div.innerText = arrows[dir];
         displayKeys[dir] = div;
     });
     return displayKeys;
 }
-
 
 export class Joystick {
     constructor(game) {
