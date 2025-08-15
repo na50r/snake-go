@@ -55,11 +55,7 @@ body {
   height: 10%;
 }
 
-.joystick.disabled {
-  display: none;
-}
-
-.joystick-display {
+.input-display {
   position: absolute;
   pointer-events: none;
   font-size: 3rem;
@@ -70,31 +66,31 @@ body {
   transition: color 0.1s, transform 0.1s;
 }
 
-.joystick-display.UP {
+.input-display.UP {
   left: 50%;
   top: 0;
   transform: translateX(-50%);
 }
 
-.joystick-display.DOWN {
+.input-display.DOWN {
   left: 50%;
   bottom: 0;
   transform: translateX(-50%);
 }
 
-.joystick-display.LEFT {
+.input-display.LEFT {
   left: 0;
   top: 50%;
   transform: translateY(-50%);
 }
 
-.joystick-display.RIGHT {
+.input-display.RIGHT {
   right: 0;
   top: 50%;
   transform: translateY(-50%);
 }
 
-.joystick-display.enabled {
+.input-display.enabled {
   color: rgba(255, 255, 255, 1);
 }
 

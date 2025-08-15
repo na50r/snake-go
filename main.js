@@ -3,16 +3,15 @@ import { Map } from './scripts/map.js';
 import { Snake } from './scripts/snake.js';
 import { Joystick } from './scripts/joystick.js';
 import { Food } from './scripts/food.js';
+import { InputDisplay } from './scripts/inputDisplay.js';
 
 const app = document.getElementById('app');
 const startBtn = document.getElementById('respawn');
 const stopBtn = document.getElementById('pause');
-
 const waitMsg = document.createElement('div');
 waitMsg.innerText = 'Waiting for server...';
 waitMsg.classList.add('waitMsg');
 app.appendChild(waitMsg);
-
 
 const canvas = document.createElement('canvas');
 canvas.id = 'canvasX';
@@ -38,7 +37,6 @@ socket.addEventListener('error', () => {
     app.appendChild(waitMsg);
 });
 
-
 function drawGrid(ctx) {
     ctx.strokeStyle = 'white';
     for (let c = 0; c < COLS; c++) {
@@ -57,6 +55,7 @@ class Game {
         this.snake = new Snake(this);
         this.joystick = new Joystick(this);
         this.food = new Food(this);
+        this.inputDisplay = new InputDisplay(this);
         this.debug = false;
         this.socket.onmessage = (event) => {
             const msg = JSON.parse(event.data);
@@ -78,6 +77,7 @@ class Game {
 
     render(ctx, deltaTime) {
         ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+        this.inputDisplay.update();
         this.food.draw(ctx);
         this.snake.update(deltaTime);
         this.map.draw(ctx);
@@ -102,9 +102,8 @@ function setupJoystick(game) {
     buttons.forEach(btn => {
         if (btn) btn.remove();
     });
-
-    app.append(game.joystick.left, game.joystick.right, game.joystick.up, game.joystick.down);
-    game.joystick.getDisplay().forEach(el => app.append(el));
+    game.joystick.getKeys().forEach(el => app.append(el));
+    game.inputDisplay.getKeys().forEach(el => app.append(el));
 }
 
 function createGameLoop() {
@@ -117,12 +116,10 @@ function createGameLoop() {
         if (game.over) {
             alert('You died!');
             cancelAnimationFrame(aniID);
-            killGame(game);
             window.location.reload();
         }
-        game.joystick.setKey();
     };
-    return {game: game, loop: gameLoop };
+    return { game: game, loop: gameLoop };
 }
 
 window.addEventListener('load', () => {
@@ -140,7 +137,7 @@ startBtn.addEventListener('click', () => {
         killGame(currentState.game);
     }
     currentState = createGameLoop();
-    requestAnimationFrame(currentState.loop);
+    aniID = requestAnimationFrame(currentState.loop);
     setupJoystick(currentState.game);
 });
 stopBtn.addEventListener('click', () => {
