@@ -137,8 +137,7 @@ startBtn.addEventListener('click', () => {
     currentState = createGameLoop();
     requestAnimationFrame(currentState.loop);
     setupJoystick(currentState.game);
-    currentState.game.joystick.getIndicators().forEach(el => app.append(el));
-
+    currentState.game.joystick.getDisplay().forEach(el => app.append(el));
 });
 stopBtn.addEventListener('click', () => {
     if (paused) {

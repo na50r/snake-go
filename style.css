@@ -1,5 +1,6 @@
 body {
   font-family: "Segoe UI Symbol", "Noto Sans Symbols", "Arial Unicode MS", sans-serif;
+  background-color: #000000;
 }
 
 #canvasX {
@@ -12,6 +13,7 @@ body {
 }
 
 #app {
+  border: 5px solid rgb(100, 100, 100);
   position: fixed;
   top: 50%;
   left: 50%;
@@ -94,4 +96,35 @@ body {
 
 .joystick-display.enabled {
   color: rgba(255, 255, 255, 1);
+}
+
+.button-bar {
+  padding-top: 5vmin;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid black;
+}
+
+/* https: //codepen.io/ssinya123/pen/GRMBwLM */
+button {
+  color: #fff;
+  background-color: #1c1c1c;
+  padding: 15px 40px 15px 40px;
+  margin: 10px;
+  font-size: 14px;
+  font-family: "Press Start 2P", system-ui;
+  border: 0;
+  box-shadow: 0px 5px black, 0px -5px black, 5px 0px black, -5px 0px black, 0px 10px #00000038, 5px 5px #00000038, -5px 5px #00000038, inset 0px 5px #ffffff36;
+  cursor: pointer;
+}
+
+button:active {
+  transform: translateY(5px);
+  box-shadow: 0px 5px black, 0px -5px black, 5px 0px black, -5px 0px black, inset 0px 5px #00000038;
+}
+
+button:disabled {
+  opacity: 0.5;
+  pointer-events: none;
 }
