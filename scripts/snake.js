@@ -101,16 +101,16 @@ export class Snake {
                 this.destPos.x = newX;
                 this.destPos.y = newY;
                 this.body.unshift({ x: newX, y: newY });
-                //this.game.map.set(newX, newY, 1);
+                this.game.map.set(newX, newY, 1);
                 if (this.body.length > this.size) {
                     const tail = this.body.pop();
-                //     this.game.map.set(tail.x, tail.y, 0);
+                this.game.map.set(tail.x, tail.y, 0);
                 }
-                const msg = {
-                    type: "positions",
-                    payload: this.getBody()
-                }
-                this.game.socket.send(JSON.stringify(msg));
+                // const msg = {
+                //     type: "positions",
+                //     payload: this.getBody()
+                // }
+                // this.game.socket.send(JSON.stringify(msg));
             }
         }
     }

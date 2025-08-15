@@ -38,24 +38,24 @@ function drawGrid(ctx) {
 class Game {
     constructor() {
         this.over = false;
-        this.socket = new WebSocket('ws://localhost:8080/ws');
+        //this.socket = new WebSocket('ws://localhost:8080/ws');
         this.map = new Map(this);
         this.input = new Input(this);
         this.snake = new Snake(this);
         this.joystick = new Joystick(this);
         this.debug = false;
-        this.socket.onmessage = (event) => {
-            const msg = JSON.parse(event.data);
-            if (msg.type === 'map') {
-                this.map.data = msg.payload;
-            }
-            if (msg.type === 'grow') {
-                this.snake.size += 1;
-            }
-            if (msg.type === "death") {
-                this.over = true;
-            }
-        };
+        // this.socket.onmessage = (event) => {
+        //     const msg = JSON.parse(event.data);
+        //     if (msg.type === 'map') {
+        //         this.map.data = msg.payload;
+        //     }
+        //     if (msg.type === 'grow') {
+        //         this.snake.size += 1;
+        //     }
+        //     if (msg.type === "death") {
+        //         this.over = true;
+        //     }
+        // };
     }
     toggleDebug() {
         this.debug = !this.debug;
