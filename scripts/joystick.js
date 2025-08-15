@@ -27,17 +27,17 @@ export class Joystick {
         this.game = game;
         ({ joystick: this.js, svg: this.svg } = createJoystick());
         const upPath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
-        upPath.setAttribute('d', 'M50,14 54,22 46,22Z')
+        upPath.setAttribute('d', 'M50,14 60,25 40,25Z')
         upPath.setAttribute('fill', 'rgba(0,0,0,0.8)')
         setupPath(upPath, this.game.input, UP);
 
         const downPath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
-        downPath.setAttribute('d', 'M50,86 54,78 46,78Z')
+        downPath.setAttribute('d', 'M50,86 60,75 40,75Z')
         downPath.setAttribute('fill', 'rgba(0,0,0,0.8)')
         setupPath(downPath, this.game.input, DOWN);
 
         const leftPath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
-        leftPath.setAttribute('d', 'M14,50 22,54 22,46Z')
+        leftPath.setAttribute('d', 'M14,50 25,60 25,40Z')
         leftPath.setAttribute('fill', 'rgba(0,0,0,0.8)')
         setupPath(leftPath, this.game.input, LEFT);
 
@@ -46,7 +46,11 @@ export class Joystick {
         rightPath.setAttribute('fill', 'rgba(0,0,0,0.8)')
         setupPath(rightPath, this.game.input, RIGHT);
 
-        this.svg.append(upPath, downPath, leftPath, rightPath)
+        const customPath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+        customPath.setAttribute('d', 'M86,50 75,60 75,40Z')
+        customPath.setAttribute('fill', 'rgba(0,0,0,0.8)')
+
+        this.svg.append(upPath, downPath, leftPath, rightPath, customPath);
         this.js.appendChild(this.svg)
     }
 }
@@ -55,8 +59,8 @@ export function createJoystick() {
     const joystick = document.createElement('div');
     joystick.id = 'joystick';
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttribute('width', '60vmin');
-    svg.setAttribute('height', '60vmin');
+    svg.setAttribute('width', '75vmin');
+    svg.setAttribute('height', '75vmin');
     svg.setAttribute('viewBox', '0 0 100 100');
     svg.innerHTML = `
         <defs>
