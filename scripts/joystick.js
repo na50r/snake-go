@@ -1,43 +1,52 @@
-import {UP, DOWN, LEFT, RIGHT} from './input.js';
+import { UP, DOWN, LEFT, RIGHT } from './input.js';
 
 // Based on: https://stackoverflow.com/a/34644069/16271405
 
-function setupPath(path, input, key){
-    path.addEventListener("pointerdown", () => {
+
+function setupPath(path, input, key) {
+    path.id = 'key'
+    path.addEventListener("touchstart", (event) => {
+        event.preventDefault(); // Prevent scrolling/zooming
         input.keyPressed(key);
     });
-    path.addEventListener("pointerup", () => {
+
+    path.addEventListener("touchend", (event) => {
+        event.preventDefault();
         input.keyReleased(key);
     });
-    path.addEventListener("pointerleave", () => {
-        input.keyReleased(key); 
+
+    path.addEventListener("touchcancel", (event) => {
+        event.preventDefault();
+        input.keyReleased(key);
     });
 }
+
 
 export class Joystick {
     constructor(game) {
         this.game = game;
         ({ joystick: this.js, svg: this.svg } = createJoystick());
         const upPath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
-        upPath.setAttribute('d', 'M50,14 54,22 46,22Z')
+        upPath.setAttribute('d', 'M50,14 60,25 40,25Z')
         upPath.setAttribute('fill', 'rgba(0,0,0,0.8)')
         setupPath(upPath, this.game.input, UP);
 
         const downPath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
-        downPath.setAttribute('d', 'M50,86 54,78 46,78Z')
+        downPath.setAttribute('d', 'M50,86 60,75 40,75Z')
         downPath.setAttribute('fill', 'rgba(0,0,0,0.8)')
         setupPath(downPath, this.game.input, DOWN);
 
         const leftPath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
-        leftPath.setAttribute('d', 'M14,50 22,54 22,46Z')
+        leftPath.setAttribute('d', 'M14,50 25,60 25,40Z')
         leftPath.setAttribute('fill', 'rgba(0,0,0,0.8)')
         setupPath(leftPath, this.game.input, LEFT);
 
         const rightPath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
-        rightPath.setAttribute('d', 'M86,50 78,54 78,46Z')
+        rightPath.setAttribute('d', 'M86,50 75,60 75,40Z')
         rightPath.setAttribute('fill', 'rgba(0,0,0,0.8)')
-        this.svg.append(upPath, downPath, leftPath, rightPath)
         setupPath(rightPath, this.game.input, RIGHT);
+
+        this.svg.append(upPath, downPath, leftPath, rightPath);
         this.js.appendChild(this.svg)
     }
 }
@@ -46,8 +55,8 @@ export function createJoystick() {
     const joystick = document.createElement('div');
     joystick.id = 'joystick';
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttribute('width', '30vw');
-    svg.setAttribute('height', '30vh');
+    svg.setAttribute('width', '75vmin');
+    svg.setAttribute('height', '75vmin');
     svg.setAttribute('viewBox', '0 0 100 100');
     svg.innerHTML = `
         <defs>
@@ -69,6 +78,5 @@ export function createJoystick() {
         <circle cx="50" cy="50" r="44" fill="url(#grad3)" />
         <circle cx="50" cy="50" r="20" fill="#cccccc" stroke="black" stroke-width="1px"/>
     `;
-    return {joystick, svg}
+    return { joystick, svg }
 }
-
