@@ -129,3 +129,14 @@ button:disabled {
   opacity: 0.5;
   pointer-events: none;
 }
+
+.waitMsg {
+  position: absolute;
+  color: #ffffff;
+  font-size: 1.5rem;
+  font-family: "Press Start 2P", system-ui;
+  width: 95vmin;
+  max-width: 512px;
+  height: 95vmin;
+  max-height: 512px;
+}

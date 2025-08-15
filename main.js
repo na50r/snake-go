@@ -8,9 +8,13 @@ const app = document.getElementById('app');
 const startBtn = document.getElementById('respawn');
 const stopBtn = document.getElementById('pause');
 
+const waitMsg = document.createElement('div');
+waitMsg.innerText = 'Waiting for server...';
+waitMsg.classList.add('waitMsg');
+app.appendChild(waitMsg);
+
 
 const canvas = document.createElement('canvas');
-
 canvas.id = 'canvasX';
 const ctx = canvas.getContext('2d');
 
@@ -22,7 +26,18 @@ export const GAME_HEIGHT = ROWS * TILE_SIZE;
 
 canvas.width = GAME_WIDTH;
 canvas.height = GAME_HEIGHT;
-app.append(canvas);
+
+const socket = new WebSocket('ws://localhost:8080/ws');
+socket.addEventListener('open', () => {
+    waitMsg.remove();
+    app.appendChild(canvas);
+});
+
+socket.addEventListener('error', () => {
+    canvas.remove();
+    app.appendChild(waitMsg);
+});
+
 
 function drawGrid(ctx) {
     ctx.strokeStyle = 'white';
@@ -34,9 +49,9 @@ function drawGrid(ctx) {
 }
 
 class Game {
-    constructor() {
+    constructor(socket) {
         this.over = false;
-        this.socket = new WebSocket('ws://localhost:8080/ws');
+        this.socket = socket;
         this.map = new Map(this);
         this.input = new Input(this);
         this.snake = new Snake(this);
@@ -93,7 +108,7 @@ function setupJoystick(game) {
 }
 
 function createGameLoop() {
-    const game = new Game();
+    const game = new Game(socket);
     const gameLoop = (timeStamp) => {
         aniID = requestAnimationFrame(gameLoop);
         const deltaTime = timeStamp - lastTime;
