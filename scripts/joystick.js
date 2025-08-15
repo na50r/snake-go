@@ -2,17 +2,23 @@ import {UP, DOWN, LEFT, RIGHT} from './input.js';
 
 // Based on: https://stackoverflow.com/a/34644069/16271405
 
-function setupPath(path, input, key){
-    path.addEventListener("pointerdown", () => {
+function setupPath(path, input, key) {
+    path.addEventListener("touchstart", (event) => {
+        event.preventDefault(); // Prevent scrolling/zooming
         input.keyPressed(key);
     });
-    path.addEventListener("pointerup", () => {
+
+    path.addEventListener("touchend", (event) => {
+        event.preventDefault();
         input.keyReleased(key);
     });
-    path.addEventListener("pointerleave", () => {
-        input.keyReleased(key); 
+
+    path.addEventListener("touchcancel", (event) => {
+        event.preventDefault();
+        input.keyReleased(key);
     });
 }
+
 
 export class Joystick {
     constructor(game) {
