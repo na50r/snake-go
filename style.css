@@ -23,6 +23,10 @@ body {
   flex-direction: column;
 }
 
+#app.hidden{
+  display: none;
+}
+
 .joystick {
   opacity: 0%;
 }
@@ -92,6 +96,10 @@ body {
 
 .input-display.enabled {
   color: rgba(255, 255, 255, 1);
+}
+
+.input-display.hidden {
+  display: none;
 }
 
 .button-bar {

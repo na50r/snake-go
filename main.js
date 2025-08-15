@@ -32,8 +32,15 @@ socket.addEventListener('open', () => {
     app.appendChild(canvas);
 });
 
-socket.addEventListener('error', () => {
+socket.addEventListener('close', () => {
     canvas.remove();
+    app.style.border = 'none';
+    const buttons = ['up', 'down', 'left', 'right'].map(cls => app.querySelector(`.joystick.${cls}`));
+    buttons.forEach(btn => {
+        if (btn) btn.remove();
+    });
+
+    currentState.game.inputDisplay.getKeys().forEach(el => el.remove());
     app.appendChild(waitMsg);
 });
 
