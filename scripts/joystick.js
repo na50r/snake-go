@@ -55,8 +55,6 @@ export function createJoystick() {
     const joystick = document.createElement('div');
     joystick.id = 'joystick';
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttribute('width', '75vmin');
-    svg.setAttribute('height', '75vmin');
     svg.setAttribute('viewBox', '0 0 100 100');
     svg.innerHTML = `
         <defs>
