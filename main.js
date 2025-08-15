@@ -2,14 +2,13 @@ import { Input } from './scripts/input.js';
 import { Map } from './scripts/map.js';
 import { Snake } from './scripts/snake.js';
 import { Joystick } from './scripts/joystick.js';
+import { InputDisplay } from './scripts/inputDisplay.js';
 import { Food } from './scripts/food.js';
 
 const app = document.getElementById('app');
 const startBtn = document.getElementById('respawn');
 const stopBtn = document.getElementById('pause');
-
 const canvas = document.createElement('canvas');
-
 canvas.id = 'canvasX';
 const ctx = canvas.getContext('2d');
 
@@ -41,6 +40,7 @@ class Game {
         this.snake = new Snake(this);
         this.joystick = new Joystick(this);
         this.food = new Food(this);
+        this.inputDisplay = new InputDisplay(this);
         this.debug = false;
     }
     toggleDebug() {
@@ -49,6 +49,7 @@ class Game {
 
     render(ctx, deltaTime) {
         ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+        this.inputDisplay.update();
         this.food.draw(ctx);
         this.snake.update(deltaTime);
         this.map.draw(ctx);
@@ -67,9 +68,8 @@ function setupJoystick(game) {
     buttons.forEach(btn => {
         if (btn) btn.remove();
     });
-
-    app.append(game.joystick.left, game.joystick.right, game.joystick.up, game.joystick.down);
-    game.joystick.getDisplay().forEach(el => app.append(el));
+    game.joystick.getKeys().forEach(el => app.append(el));
+    game.inputDisplay.getKeys().forEach(el => app.append(el));
 }
 
 function createGameLoop() {
@@ -84,7 +84,6 @@ function createGameLoop() {
             cancelAnimationFrame(aniID);
             window.location.reload();
         }
-        game.joystick.setKey();
     };
     return {game: game, loop: gameLoop };
 }
