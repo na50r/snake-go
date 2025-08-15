@@ -2,7 +2,9 @@ import {UP, DOWN, LEFT, RIGHT} from './input.js';
 
 // Based on: https://stackoverflow.com/a/34644069/16271405
 
+
 function setupPath(path, input, key) {
+    path.id = 'key'
     path.addEventListener("touchstart", (event) => {
         event.preventDefault(); // Prevent scrolling/zooming
         input.keyPressed(key);
@@ -42,8 +44,9 @@ export class Joystick {
         const rightPath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
         rightPath.setAttribute('d', 'M86,50 78,54 78,46Z')
         rightPath.setAttribute('fill', 'rgba(0,0,0,0.8)')
-        this.svg.append(upPath, downPath, leftPath, rightPath)
         setupPath(rightPath, this.game.input, RIGHT);
+
+        this.svg.append(upPath, downPath, leftPath, rightPath)
         this.js.appendChild(this.svg)
     }
 }
@@ -52,8 +55,8 @@ export function createJoystick() {
     const joystick = document.createElement('div');
     joystick.id = 'joystick';
     const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttribute('width', '30vw');
-    svg.setAttribute('height', '30vh');
+    svg.setAttribute('width', '60vmin');
+    svg.setAttribute('height', '60vmin');
     svg.setAttribute('viewBox', '0 0 100 100');
     svg.innerHTML = `
         <defs>
