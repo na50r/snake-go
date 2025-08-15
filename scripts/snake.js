@@ -101,6 +101,9 @@ export class Snake {
                 this.destPos.x = newX;
                 this.destPos.y = newY;
                 this.body.unshift({ x: newX, y: newY });
+                if (this.game.map.get(newX, newY) === 2) {
+                    this.game.food.update()
+                }
                 this.game.map.set(newX, newY, 1);
                 if (this.body.length > this.size) {
                     const tail = this.body.pop();

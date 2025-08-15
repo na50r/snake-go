@@ -2,6 +2,7 @@ import { Input } from './scripts/input.js';
 import { Map } from './scripts/map.js';
 import { Snake } from './scripts/snake.js';
 import { Joystick } from './scripts/joystick.js';
+import { Food } from './scripts/food.js';
 
 const app = document.getElementById('app');
 const startBtn = document.createElement('button');
@@ -43,6 +44,7 @@ class Game {
         this.input = new Input(this);
         this.snake = new Snake(this);
         this.joystick = new Joystick(this);
+        this.food = new Food(this);
         this.debug = false;
         // this.socket.onmessage = (event) => {
         //     const msg = JSON.parse(event.data);
