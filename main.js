@@ -1,12 +1,15 @@
 import { Input } from './scripts/input.js';
 import { Map } from './scripts/map.js';
 import { Snake } from './scripts/snake.js';
+import { Joystick } from './scripts/joystick.js';
 
 const app = document.getElementById('app');
 const startBtn = document.createElement('button');
 const stopBtn = document.createElement('button');
 startBtn.innerText = 'Respawn';
 stopBtn.innerText = 'Pause';
+const joystickButton = document.createElement('button');
+joystickButton.innerText = 'Joystick';
 
 const canvas = document.createElement('canvas');
 
@@ -21,7 +24,7 @@ export const GAME_HEIGHT = ROWS * TILE_SIZE;
 
 canvas.width = GAME_WIDTH;
 canvas.height = GAME_HEIGHT;
-app.append(canvas, startBtn, stopBtn);
+app.append(startBtn, stopBtn, joystickButton, canvas);
 
 function drawGrid(ctx) {
     ctx.strokeStyle = 'white';
@@ -39,6 +42,7 @@ class Game {
         this.map = new Map(this);
         this.input = new Input(this);
         this.snake = new Snake(this);
+        this.joystick = new Joystick(this);
         this.debug = false;
         this.socket.onmessage = (event) => {
             const msg = JSON.parse(event.data);
@@ -65,17 +69,28 @@ class Game {
     };
 }
 
+
 function killGame(game) {
     game.socket.close();
     game.socket = null;
     game = null;
 }
 
-
 var aniID;
 var lastTime = 0;
 var paused = false;
+var enabled = true;
 var currentState = { game: null, loop: null }
+
+function setupJoystick(game) {
+    const oldJoystick = document.getElementById('joystick');
+    if (oldJoystick) {
+        oldJoystick.remove();
+    }
+    app.append(game.joystick.js);
+}
+
+
 function createGameLoop() {
     const game = new Game();
     const gameLoop = (timeStamp) => {
@@ -96,6 +111,7 @@ function createGameLoop() {
 window.addEventListener('load', () => {
     currentState = createGameLoop();
     requestAnimationFrame(currentState.loop);
+    setupJoystick(currentState.game);
 })
 
 startBtn.addEventListener('click', () => {
@@ -107,6 +123,8 @@ startBtn.addEventListener('click', () => {
     }
     currentState = createGameLoop();
     requestAnimationFrame(currentState.loop);
+    setupJoystick(currentState.game);
+
 });
 stopBtn.addEventListener('click', () => {
     if (paused) {
@@ -120,3 +138,15 @@ stopBtn.addEventListener('click', () => {
     paused = true;
 })
 
+joystickButton.addEventListener('click', () => {
+    if (enabled) {
+        enabled = false;
+        const joystick = document.getElementById('joystick');
+        joystick.classList.add('disabled');
+        return;
+    }
+    enabled = true;
+    const joystick = document.getElementById('joystick');
+    joystick.classList.remove('disabled');
+    
+})

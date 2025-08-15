@@ -7,6 +7,9 @@ import (
 
 	"github.com/gorilla/websocket"
 	"math/rand"
+	"os"
+	"os/signal"
+	"syscall"
 )
 
 type Message struct {
@@ -210,13 +213,31 @@ func (r *Room) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	client.read()
 }
 
+type Server struct {
+	room *Room
+}
 
-func main() {
-	r := NewRoom()
-	go r.run()
-	http.Handle("/ws", r)
+func NewServer() *Server {
+	s := &Server{room: NewRoom()}
+	go s.room.run()
+	return s
+}
+
+func (s *Server) run() {
+	http.Handle("/ws", s.room)
+	log.Println("Server started on port 8080")
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
 		log.Fatal("ListenAndServe:", err)
 	}
+}
+
+func main() {
+	s := NewServer()
+	go s.run()
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, os.Interrupt, syscall.SIGTERM)
+
+	<-stop //Wait for stop signal
+	log.Println("Shutting down server...")
 }
