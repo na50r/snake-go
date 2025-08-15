@@ -8,7 +8,7 @@
 }
 
 #app {
-    
+    border: 5px solid rgb(255, 0, 238);
     position: fixed;
     top: 50%;
     left: 50%;
@@ -19,19 +19,78 @@
 }
 
 
-#joystick {
-    position: fixed;
-    bottom: 2.5%;
-    opacity: 30%;
+.joystick {
+    opacity: 0%;
 }
 
-#joystick.disabled {
+.joystick.right {
+  position: absolute;
+  right: 0;
+  height: 100%;
+  width: 10%;
+}
+
+.joystick.left {
+  position: absolute;
+  left: 0;
+  height: 100%;
+  width: 10%;
+}
+
+.joystick.up {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 10%;
+}
+
+.joystick.down {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 10%;
+}
+
+.joystick.disabled {
     display: none;
 }
 
-svg {
-    max-width: 486px;
-    max-height: 486px;
-    width: 90vmin;
-    height: 90vmin;
+
+.joystick-display {
+  position: absolute;
+  pointer-events: none;
+  font-size: 3rem;
+  color: rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.1s, transform 0.1s;
+}
+
+.joystick-display.UP {
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+}
+
+.joystick-display.DOWN {
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+}
+
+.joystick-display.LEFT {
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.joystick-display.RIGHT {
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.joystick-display.enabled {
+  color: rgba(255, 255, 255, 1);
 }
