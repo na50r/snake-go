@@ -23,6 +23,12 @@ body {
 }
 
 
+.arrow {
+  filter: invert(1);
+  width: 24px;
+  height: 24px;
+}
+
 .joystick {
     opacity: 0%;
 }

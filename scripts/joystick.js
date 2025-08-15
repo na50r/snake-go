@@ -27,7 +27,7 @@ function createJoystickDisplay() {
     directions.forEach(dir => {
         const div = document.createElement('div');
         div.classList.add('joystick-display', dir);
-        const arrows = { UP: '⮝', DOWN: '⮟', LEFT: '⮜', RIGHT: '⮞' };
+        const arrows = { UP: '^', DOWN: 'v', LEFT: '<', RIGHT: '>' };
         div.innerText = arrows[dir];
         displayKeys[dir] = div;
     });
