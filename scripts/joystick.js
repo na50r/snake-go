@@ -42,15 +42,11 @@ export class Joystick {
         setupPath(leftPath, this.game.input, LEFT);
 
         const rightPath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
-        rightPath.setAttribute('d', 'M86,50 78,54 78,46Z')
+        rightPath.setAttribute('d', 'M86,50 75,60 75,40Z')
         rightPath.setAttribute('fill', 'rgba(0,0,0,0.8)')
         setupPath(rightPath, this.game.input, RIGHT);
 
-        const customPath = document.createElementNS('http://www.w3.org/2000/svg', 'path')
-        customPath.setAttribute('d', 'M86,50 75,60 75,40Z')
-        customPath.setAttribute('fill', 'rgba(0,0,0,0.8)')
-
-        this.svg.append(upPath, downPath, leftPath, rightPath, customPath);
+        this.svg.append(upPath, downPath, leftPath, rightPath);
         this.js.appendChild(this.svg)
     }
 }
