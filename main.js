@@ -71,9 +71,9 @@ class Game {
 
 
 function killGame(game) {
-    game.socket.close();
-    game.socket = null;
-    game = null;
+    // game.socket.close();
+    // game.socket = null;
+    // game = null;
 }
 
 var aniID;
