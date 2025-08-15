@@ -2,6 +2,7 @@ import { Input } from './scripts/input.js';
 import { Map } from './scripts/map.js';
 import { Snake } from './scripts/snake.js';
 import { Joystick } from './scripts/joystick.js';
+import { Food } from './scripts/food.js';
 
 const app = document.getElementById('app');
 const startBtn = document.getElementById('respawn');
@@ -40,6 +41,7 @@ class Game {
         this.input = new Input(this);
         this.snake = new Snake(this);
         this.joystick = new Joystick(this);
+        this.food = new Food(this);
         this.debug = false;
         this.socket.onmessage = (event) => {
             const msg = JSON.parse(event.data);
@@ -48,6 +50,7 @@ class Game {
             }
             if (msg.type === 'grow') {
                 this.snake.size += 1;
+                this.food.eaten += 1;
             }
             if (msg.type === "death") {
                 this.over = true;
@@ -60,9 +63,10 @@ class Game {
 
     render(ctx, deltaTime) {
         ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
-        if (this.debug) drawGrid(ctx);
+        this.food.draw(ctx);
         this.snake.update(deltaTime);
         this.map.draw(ctx);
+        if (this.debug) drawGrid(ctx);
     };
 }
 
