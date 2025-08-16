@@ -110,12 +110,6 @@ class Game {
   };
 }
 
-function killGame(game) {
-  game.socket.close();
-  game.socket = null;
-  game = null;
-}
-
 var aniID;
 var lastTime = 0;
 var paused = false;
