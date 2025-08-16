@@ -32,7 +32,7 @@ function createJoystickDisplayWithImages() {
     const displayKeys = {};
     directions.forEach(dir => {
         const img = document.createElement('img');
-        img.src = `./assets/arrow-icon-1174.png`;
+        img.src = `./arrow-icon-1174.png`;
         img.alt = dir;
         const cls = `input-display-img`;
         img.classList.add(cls, dir);
@@ -45,7 +45,7 @@ function createJoystickDisplayWithImages() {
 export class InputDisplay {
     constructor(game) {
         this.game = game;
-        this.displayKeys = createJoystickDisplay();
+        this.displayKeys = createJoystickDisplayWithImages();
     }
     getKeys() {
         return [this.displayKeys[UP], this.displayKeys[DOWN], this.displayKeys[LEFT], this.displayKeys[RIGHT]];

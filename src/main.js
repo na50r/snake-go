@@ -7,6 +7,9 @@ import { Joystick } from './scripts/joystick.js';
 import { Food } from './scripts/food.js';
 import { InputDisplay } from './scripts/inputDisplay.js';
 
+const favicon = import.meta.env.VITE_FAVICON;
+document.getElementById("favicon").href = favicon;
+
 const app = document.getElementById('app');
 const startBtn = document.getElementById('respawn');
 const stopBtn = document.getElementById('pause');
@@ -28,7 +31,7 @@ export const GAME_HEIGHT = ROWS * TILE_SIZE;
 canvas.width = GAME_WIDTH;
 canvas.height = GAME_HEIGHT;
 
-const socket = new WebSocket('ws://localhost:8080/ws');
+const socket = new WebSocket(import.meta.env.VITE_API);
 socket.addEventListener('open', () => {
   waitMsg.remove();
   app.appendChild(canvas);
