@@ -22,10 +22,14 @@ export class Map {
             for (let r = 0; r < ROWS; r++) {
                 if (this.get(c, r) === 1) {
                     ctx.fillStyle = 'white';
+                    ctx.shadowBlur = 25;
+                    ctx.shadowColor = "white";
                     ctx.fillRect(c * TILE_SIZE, r * TILE_SIZE, TILE_SIZE, TILE_SIZE);
                 }
                 if (this.get(c, r) === 2) {
                     ctx.fillStyle = 'yellow';
+                    ctx.shadowBlur = 25;
+                    ctx.shadowColor = "yellow";
                     ctx.fillRect(c * TILE_SIZE, r * TILE_SIZE, TILE_SIZE, TILE_SIZE);
                 }
             }

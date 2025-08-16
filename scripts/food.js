@@ -30,6 +30,7 @@ export class Food {
 
     draw(ctx) {
         ctx.fillStyle = "gray";
+        ctx.shadowBlur = 0;
         const fontSize = GAME_HEIGHT * 0.4;
         ctx.font = `${fontSize}px 'Press Start 2P', monospace`;
         ctx.textAlign = "center";
