@@ -4,9 +4,9 @@ function createJoystickDisplay() {
     const directions = [UP, DOWN, LEFT, RIGHT];
 
     const old = directions.map(dir => document.querySelector(`.input-display.${dir}`));
-    old.forEach(el =>{
-        if(el) el.remove()
-        }
+    old.forEach(el => {
+        if (el) el.remove()
+    }
     )
     const displayKeys = {};
     directions.forEach(dir => {
@@ -20,21 +20,44 @@ function createJoystickDisplay() {
     return displayKeys;
 }
 
+function createJoystickDisplayWithImages() {
+    const directions = [UP, DOWN, LEFT, RIGHT];
+
+    const old = directions.map(dir => document.querySelector(`.input-display.${dir}`));
+    old.forEach(el => {
+        if (el) el.remove()
+    }
+    )
+    const displayKeys = {};
+    directions.forEach(dir => {
+        const img = document.createElement('img');
+        img.src = `./assets/arrow-icon-1174.png`;
+        img.alt = dir;
+        const cls = `input-display-img`;
+        img.classList.add(cls, dir);
+        displayKeys[dir] = img;
+    });
+    return displayKeys;
+}
+
 export class InputDisplay {
     constructor(game) {
         this.game = game;
-        this.displayKeys = createJoystickDisplay();
+        this.displayKeys = createJoystickDisplayWithImages();
     }
     getKeys() {
         return [this.displayKeys[UP], this.displayKeys[DOWN], this.displayKeys[LEFT], this.displayKeys[RIGHT]];
     }
     update() {
         const lastKey = this.game.input.lastKey;
-                for (const key in this.displayKeys) {
+        for (const key in this.displayKeys) {
+            const img = this.displayKeys[key].querySelector('img');
             if (key === lastKey) {
                 this.displayKeys[key].classList.add('enabled');
+                if (img) img.classList.add('enabled');
             } else {
                 this.displayKeys[key].classList.remove('enabled');
+                if (img) img.classList.remove('enabled');
             }
         }
     }

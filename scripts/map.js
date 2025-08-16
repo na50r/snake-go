@@ -18,6 +18,7 @@ export class Map {
         return this.data[y * COLS + x];
     }
     draw(ctx) {
+        ctx.save();
         for (let c = 0; c < COLS; c++) {
             for (let r = 0; r < ROWS; r++) {
                 if (this.get(c, r) === 1) {
@@ -34,5 +35,6 @@ export class Map {
                 }
             }
         }
+        ctx.restore();
     }
 }
