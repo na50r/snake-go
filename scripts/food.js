@@ -22,7 +22,6 @@ export class Food {
         this.game.map.set(this.pos.x, this.pos.y, 2);
     }
     update() {
-        console.log("food");
         this.pos = setRandomPosition(this.game.map.data);
         this.game.snake.size += 1;
         this.eaten += 1;
