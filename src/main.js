@@ -72,6 +72,7 @@ class Game {
     this.socket.onmessage = (event) => {
       const msg = JSON.parse(event.data);
       if (msg.type === 'map') {
+        //this.map.data = msg.payload;
         this.map.data = msg.payload.split("").map(Number);
       }
       if (msg.type === 'grow') {

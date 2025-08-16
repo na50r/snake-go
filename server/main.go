@@ -10,6 +10,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"strings"
 )
 
 type Message struct {
@@ -129,18 +130,22 @@ func NewRoom() *Room {
 		death: make(chan *Client),
 	}
 }
-
 func drawMap(snakes map[*Client][]int, food *Food) string {
-	gameMap := make([]byte, 32 * 32)
+	gameMap := make([]string, 32 * 32)
+	for i := range gameMap {
+		gameMap[i] = "0"
+	}
 	for _, positions := range snakes {
 		for _, idx := range positions {
 			if idx >= 0 && idx < len(gameMap) {
-				gameMap[idx] = '1'
+				gameMap[idx] = "1"
 			}
 		}
 	}
-	gameMap[food.position] = '2'
-	return string(gameMap)
+	if food.position >= 0 && food.position < len(gameMap) {
+		gameMap[food.position] = "2"
+	}
+	return strings.Join(gameMap, "")
 }
 
 func (r *Room) run() {
@@ -162,6 +167,7 @@ func (r *Room) run() {
 			go checkDeath(r.snakes, r.death)
             gameMap := drawMap(r.snakes, r.food)
             data, _ := json.Marshal(Message{Type: "map", Payload: gameMap})
+			log.Printf("Sending %d bytes", len(data))
             for cli := range r.clients {
                 select {
                 case cli.receive <- data:
