@@ -142,13 +142,10 @@ startBtn.addEventListener('click', () => {
   if (aniID) {
     cancelAnimationFrame(aniID);
   }
-  if (currentState.game) {
-    killGame(currentState.game);
-  }
-  currentState = createGameLoop();
-  aniID = requestAnimationFrame(currentState.loop);
-  setupJoystick(currentState.game);
+  window.location.reload();
+
 });
+
 stopBtn.addEventListener('click', () => {
   if (paused) {
     paused = false;
