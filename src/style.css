@@ -85,8 +85,8 @@ body {
   opacity: 40%;
   position: absolute;
   pointer-events: none;
-  width: 10vmin;
-  height: 10vmin;
+  width: 12.5vmin;
+  height: 12.5vmin;
   align-items: center;
   justify-content: center;
 }
