@@ -223,10 +223,16 @@ func NewServer() *Server {
 	return s
 }
 
+
+
 func (s *Server) run() {
+	PORT := os.Getenv("PORT")
+	if PORT == "" {
+		PORT = "8080"
+	}
 	http.Handle("/ws", s.room)
-	log.Println("Server started on port 8080")
-	err := http.ListenAndServe(":8080", nil)
+	log.Println("Server started on port ", PORT)
+	err := http.ListenAndServe(":"+PORT, nil)
 	if err != nil {
 		log.Fatal("ListenAndServe:", err)
 	}
