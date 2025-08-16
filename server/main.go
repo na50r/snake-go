@@ -10,7 +10,6 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"strings"
 )
 
 type Message struct {
@@ -130,22 +129,20 @@ func NewRoom() *Room {
 		death: make(chan *Client),
 	}
 }
-func drawMap(snakes map[*Client][]int, food *Food) string {
-	gameMap := make([]string, 32 * 32)
-	for i := range gameMap {
-		gameMap[i] = "0"
-	}
+
+type Delta struct {
+	Food int `json:"food"`
+	Snakes [][]int `json:"snakes"`
+}
+
+func createDelta(snakes map[*Client][]int, food *Food) *Delta {
+	snakePositions := make([][]int, len(snakes))
+	i := 0
 	for _, positions := range snakes {
-		for _, idx := range positions {
-			if idx >= 0 && idx < len(gameMap) {
-				gameMap[idx] = "1"
-			}
-		}
+		snakePositions[i] = positions
+		i++
 	}
-	if food.position >= 0 && food.position < len(gameMap) {
-		gameMap[food.position] = "2"
-	}
-	return strings.Join(gameMap, "")
+	return &Delta{Food: food.position, Snakes: snakePositions}
 }
 
 func (r *Room) run() {
@@ -165,7 +162,7 @@ func (r *Room) run() {
             r.snakes[upd.client] = upd.body
 			go r.food.check(r.snakes, r.eaten)
 			go checkDeath(r.snakes, r.death)
-            gameMap := drawMap(r.snakes, r.food)
+            gameMap := createDelta(r.snakes, r.food)
             data, _ := json.Marshal(Message{Type: "map", Payload: gameMap})
 			log.Printf("Sending %d bytes", len(data))
             for cli := range r.clients {

@@ -58,6 +58,19 @@ function drawGrid(ctx) {
   }
 }
 
+function updateMap(map, snakes, food) {
+  const size = 32 * 32;
+  for (let i = 0; i < size; i++) {
+    map[i] = 0;
+  }
+  for (const snake of snakes) {
+    for (const idx of snake) {
+      map[idx] = 1;
+    }
+  }
+  map[food] = 2;
+}
+
 class Game {
   constructor(socket) {
     this.over = false;
@@ -72,8 +85,7 @@ class Game {
     this.socket.onmessage = (event) => {
       const msg = JSON.parse(event.data);
       if (msg.type === 'map') {
-        //this.map.data = msg.payload;
-        this.map.data = msg.payload.split("").map(Number);
+        updateMap(this.map.data, msg.payload.snakes, msg.payload.food);
       }
       if (msg.type === 'grow') {
         this.snake.size += 1;
