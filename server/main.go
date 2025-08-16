@@ -130,18 +130,17 @@ func NewRoom() *Room {
 	}
 }
 
-func drawMap(snakes map[*Client][]int, food *Food) []int {
-	gameMap := make([]int, 32 * 32)
+func drawMap(snakes map[*Client][]int, food *Food) string {
+	gameMap := make([]byte, 32 * 32)
 	for _, positions := range snakes {
 		for _, idx := range positions {
 			if idx >= 0 && idx < len(gameMap) {
-				gameMap[idx] = 1
+				gameMap[idx] = '1'
 			}
 		}
 	}
-	gameMap[food.position] = 2
-	//log.Println(gameMap)
-	return gameMap
+	gameMap[food.position] = '2'
+	return string(gameMap)
 }
 
 func (r *Room) run() {
