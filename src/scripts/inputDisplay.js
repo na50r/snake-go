@@ -45,7 +45,7 @@ function createJoystickDisplayWithImages() {
 export class InputDisplay {
     constructor(game) {
         this.game = game;
-        this.displayKeys = createJoystickDisplayWithImages();
+        this.displayKeys = createJoystickDisplay();
     }
     getKeys() {
         return [this.displayKeys[UP], this.displayKeys[DOWN], this.displayKeys[LEFT], this.displayKeys[RIGHT]];
