@@ -13,6 +13,12 @@
   -moz-osx-font-smoothing: grayscale;
 } */
 
+
+.sa2-title {
+  color: #c4c4c4;
+  font-family: "Press Start 2P", system-ui;
+}
+
 body {
   font-family: "Segoe UI Symbol", "Noto Sans Symbols", "Arial Unicode MS", sans-serif;
   background-color: #000000;

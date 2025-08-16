@@ -6,9 +6,26 @@ import { Snake } from './scripts/snake.js';
 import { Joystick } from './scripts/joystick.js';
 import { Food } from './scripts/food.js';
 import { InputDisplay } from './scripts/inputDisplay.js';
+import swal from 'sweetalert2'
 
 const favicon = import.meta.env.VITE_FAVICON;
 document.getElementById("favicon").href = favicon;
+
+function showAlert(msg) {
+  swal.fire({
+    title: msg,
+    background: '#404040ff',
+    confirmButtonText: "Respawn",
+    confirmButtonColor: "#2c2c2cff",
+    customClass: {
+      title: 'sa2-title',
+    }
+  }).then((result) => {
+    if (result.isConfirmed) {
+      startBtn.click();
+    }
+  });
+}
 
 const app = document.getElementById('app');
 const startBtn = document.getElementById('respawn');
@@ -133,9 +150,8 @@ function createGameLoop() {
     lastTime = timeStamp;
     game.render(ctx, deltaTime);
     if (game.over) {
-      alert('You died!');
+      showAlert('You died!');
       cancelAnimationFrame(aniID);
-      window.location.reload();
     }
   };
   return { game: game, loop: gameLoop };
