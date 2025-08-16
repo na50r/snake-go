@@ -23,10 +23,6 @@ body {
   flex-direction: column;
 }
 
-#app.hidden{
-  display: none;
-}
-
 .joystick {
   opacity: 0%;
 }
@@ -70,6 +66,41 @@ body {
   transition: color 0.1s, transform 0.1s;
 }
 
+.input-display-img {
+  opacity: 40%;
+  position: absolute;
+  pointer-events: none;
+  width: 10vmin;
+  height: 10vmin;
+  align-items: center;
+  justify-content: center;
+}
+
+.input-display-img.enabled {
+  filter: invert(100%);
+}
+
+.input-display-img.UP {
+  top: 0;
+  transform: rotate(-90deg);
+}
+
+.input-display-img.DOWN {
+  bottom: 0;
+  transform: rotate(90deg);
+}
+
+.input-display-img.LEFT {
+  left: 0;
+  top: 45%;
+  transform: rotate(180deg);
+}
+
+.input-display-img.RIGHT {
+  right: 0;
+  top: 45%;
+}
+
 .input-display.UP {
   left: 50%;
   top: 0;
@@ -98,10 +129,6 @@ body {
   color: rgba(255, 255, 255, 1);
 }
 
-.input-display.hidden {
-  display: none;
-}
-
 .button-bar {
   padding-top: 5vmin;
   display: flex;
@@ -109,6 +136,7 @@ body {
   align-items: center;
   border: 1px solid black;
 }
+
 
 /* https: //codepen.io/ssinya123/pen/GRMBwLM */
 button {
@@ -132,15 +160,4 @@ button:active {
 button:disabled {
   opacity: 0.5;
   pointer-events: none;
-}
-
-.waitMsg {
-  position: absolute;
-  color: #ffffff;
-  font-size: 1.5rem;
-  font-family: "Press Start 2P", system-ui;
-  width: 95vmin;
-  max-width: 512px;
-  height: 95vmin;
-  max-height: 512px;
 }

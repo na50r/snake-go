@@ -37,13 +37,13 @@ export class Input {
         if (this.keys.indexOf(key) === -1) {
             this.keys.unshift(key);
         }
-        console.log(key, '->', this.keys);
+        //console.log(key, '->', this.keys);
     }
     keyReleased(key) {
         const index = this.keys.indexOf(key);
         if (index === -1) return;
         this.keys.splice(index, 1);
-        console.log(key, '<-', this.keys);
+        //console.log(key, '<-', this.keys);
     }
 
     get lastKey() {

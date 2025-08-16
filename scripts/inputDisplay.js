@@ -20,10 +20,32 @@ function createJoystickDisplay() {
     return displayKeys;
 }
 
+
+function createJoystickDisplayWithImages() {
+    const directions = [UP, DOWN, LEFT, RIGHT];
+
+    const old = directions.map(dir => document.querySelector(`.input-display.${dir}`));
+    old.forEach(el => {
+        if (el) el.remove()
+    }
+    )
+    const displayKeys = {};
+    directions.forEach(dir => {
+        const img = document.createElement('img');
+        img.src = `./assets/arrow-icon-1174.png`;
+        img.alt = dir;
+        const cls = `input-display-img`;
+        img.classList.add(cls, dir);
+        displayKeys[dir] = img;
+    });
+    return displayKeys;
+}
+
+
 export class InputDisplay {
     constructor(game) {
         this.game = game;
-        this.displayKeys = createJoystickDisplay();
+        this.displayKeys = createJoystickDisplayWithImages();
     }
     getKeys() {
         return [this.displayKeys[UP], this.displayKeys[DOWN], this.displayKeys[LEFT], this.displayKeys[RIGHT]];
