@@ -26,8 +26,8 @@ type Message struct {
 	Type  string                 `protobuf:"bytes,1,opt,name=type,proto3" json:"type,omitempty"`
 	// Types that are valid to be assigned to Payload:
 	//
-	//	*Message_IntList
-	//	*Message_ObjectData
+	//	*Message_Positions
+	//	*Message_State
 	Payload       isMessage_Payload `protobuf_oneof:"payload"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
@@ -77,19 +77,19 @@ func (x *Message) GetPayload() isMessage_Payload {
 	return nil
 }
 
-func (x *Message) GetIntList() *Positions {
+func (x *Message) GetPositions() *Positions {
 	if x != nil {
-		if x, ok := x.Payload.(*Message_IntList); ok {
-			return x.IntList
+		if x, ok := x.Payload.(*Message_Positions); ok {
+			return x.Positions
 		}
 	}
 	return nil
 }
 
-func (x *Message) GetObjectData() *GameState {
+func (x *Message) GetState() *GameState {
 	if x != nil {
-		if x, ok := x.Payload.(*Message_ObjectData); ok {
-			return x.ObjectData
+		if x, ok := x.Payload.(*Message_State); ok {
+			return x.State
 		}
 	}
 	return nil
@@ -99,17 +99,17 @@ type isMessage_Payload interface {
 	isMessage_Payload()
 }
 
-type Message_IntList struct {
-	IntList *Positions `protobuf:"bytes,3,opt,name=int_list,json=intList,proto3,oneof"`
+type Message_Positions struct {
+	Positions *Positions `protobuf:"bytes,3,opt,name=positions,proto3,oneof"`
 }
 
-type Message_ObjectData struct {
-	ObjectData *GameState `protobuf:"bytes,4,opt,name=object_data,json=objectData,proto3,oneof"`
+type Message_State struct {
+	State *GameState `protobuf:"bytes,4,opt,name=state,proto3,oneof"`
 }
 
-func (*Message_IntList) isMessage_Payload() {}
+func (*Message_Positions) isMessage_Payload() {}
 
-func (*Message_ObjectData) isMessage_Payload() {}
+func (*Message_State) isMessage_Payload() {}
 
 type GameState struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
@@ -255,14 +255,13 @@ var File_models_types_proto protoreflect.FileDescriptor
 
 const file_models_types_proto_rawDesc = "" +
 	"\n" +
-	"\x12models/types.proto\"\x80\x01\n" +
+	"\x12models/types.proto\"x\n" +
 	"\aMessage\x12\x12\n" +
-	"\x04type\x18\x01 \x01(\tR\x04type\x12'\n" +
-	"\bint_list\x18\x03 \x01(\v2\n" +
-	".PositionsH\x00R\aintList\x12-\n" +
-	"\vobject_data\x18\x04 \x01(\v2\n" +
-	".GameStateH\x00R\n" +
-	"objectDataB\t\n" +
+	"\x04type\x18\x01 \x01(\tR\x04type\x12*\n" +
+	"\tpositions\x18\x03 \x01(\v2\n" +
+	".PositionsH\x00R\tpositions\x12\"\n" +
+	"\x05state\x18\x04 \x01(\v2\n" +
+	".GameStateH\x00R\x05stateB\t\n" +
 	"\apayload\"?\n" +
 	"\tGameState\x12\x12\n" +
 	"\x04food\x18\x01 \x01(\x05R\x04food\x12\x1e\n" +
@@ -292,8 +291,8 @@ var file_models_types_proto_goTypes = []any{
 	(*Positions)(nil), // 3: Positions
 }
 var file_models_types_proto_depIdxs = []int32{
-	3, // 0: Message.int_list:type_name -> Positions
-	1, // 1: Message.object_data:type_name -> GameState
+	3, // 0: Message.positions:type_name -> Positions
+	1, // 1: Message.state:type_name -> GameState
 	2, // 2: GameState.snakes:type_name -> Snake
 	3, // [3:3] is the sub-list for method output_type
 	3, // [3:3] is the sub-list for method input_type
@@ -308,8 +307,8 @@ func file_models_types_proto_init() {
 		return
 	}
 	file_models_types_proto_msgTypes[0].OneofWrappers = []any{
-		(*Message_IntList)(nil),
-		(*Message_ObjectData)(nil),
+		(*Message_Positions)(nil),
+		(*Message_State)(nil),
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{

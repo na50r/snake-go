@@ -38,7 +38,7 @@ func (c *Client) read() {
             continue
         }
 		if msg.Type == "positions" {
-			pos := msg.GetIntList().GetBody()
+			pos := msg.GetPositions().GetBody()
 			positions := make([]int, len(pos))
 			for i, v := range pos {
 				positions[i] = int(v)
@@ -164,7 +164,7 @@ func createMapMsg(d *Delta) *models.Message {
 	for _, snake := range d.Snakes {
 		gameState.Snakes = append(gameState.Snakes, &models.Snake{Body: toInt32Slice(snake)})
 	}
-	msg.Payload = &models.Message_ObjectData{ObjectData: gameState}
+	msg.Payload = &models.Message_State{State: gameState}
 	return msg
 
 }
