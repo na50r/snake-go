@@ -79,9 +79,6 @@ func (f *Food) check(snakes map[*Client][]int, eaten chan *Client) {
 
 
 func checkDeath(snakes map[*Client][]int, death chan *Client) {
-	if len(snakes) < 1 {
-		return
-	}
 	for cli, positions := range snakes {
 		head := positions[0]
 		for other, positions := range snakes {
@@ -189,11 +186,12 @@ func (r *Room) run() {
             gameMap := createDelta(r.snakes, r.food)
 			msg := createMapMsg(gameMap)
 			data, _ := proto.Marshal(msg)
-			log.Printf("Sending %d bytes", len(data))
+			log.Printf("Sending %d bytes to %d clients", len(data), len(r.clients))
             for cli := range r.clients {
                 select {
                 case cli.receive <- data:
                 default:
+					log.Println("Client receive channel full")
                 }
             }
 		case cli := <-r.eaten:
