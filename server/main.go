@@ -10,6 +10,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"strings"
 )
 
 type Message struct {
@@ -130,18 +131,22 @@ func NewRoom() *Room {
 	}
 }
 
-func drawMap(snakes map[*Client][]int, food *Food) []int {
-	gameMap := make([]int, 32 * 32)
+func drawMap(snakes map[*Client][]int, food *Food) string {
+	gameMap := make([]string, 32 * 32)
+	for i := range gameMap {
+		gameMap[i] = "0"
+	}
 	for _, positions := range snakes {
 		for _, idx := range positions {
 			if idx >= 0 && idx < len(gameMap) {
-				gameMap[idx] = 1
+				gameMap[idx] = "1"
 			}
 		}
 	}
-	gameMap[food.position] = 2
-	//log.Println(gameMap)
-	return gameMap
+	if food.position >= 0 && food.position < len(gameMap) {
+		gameMap[food.position] = "2"
+	}
+	return strings.Join(gameMap, "")
 }
 
 func (r *Room) run() {

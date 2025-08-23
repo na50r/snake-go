@@ -106,11 +106,12 @@ export class Snake {
                     const tail = this.body.pop();
                 //     this.game.map.set(tail.x, tail.y, 0);
                 }
-                const msg = {
+                const data = {
                     type: "positions",
                     payload: this.getBody()
                 }
-                this.game.socket.send(JSON.stringify(msg));
+                const msg = JSON.stringify(data);
+                this.game.socket.send(msg);
             }
         }
     }
