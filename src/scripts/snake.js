@@ -107,7 +107,7 @@ export class Snake {
                 const Positions = this.game.root.lookupType("Positions");
                 const positions = Positions.create({ body: this.getBody() });
                 const Message = this.game.root.lookupType("Message");
-                const msg = Message.encode({ type: "positions", intList: positions }).finish();
+                const msg = Message.encode({ type: "positions", positions: positions }).finish();
                 this.game.socket.send(msg);
             }
         }

@@ -116,7 +116,7 @@ class Game {
     this.socket.onmessage = (event) => {
       const msg = parseData(event.data);
       if (msg.type === 'map') {
-        updateMap(this.map.data, msg.objectData.snakes, msg.objectData.food);
+        updateMap(this.map.data, msg.state.snakes, msg.state.food);
       }
       if (msg.type === 'grow') {
         this.snake.size += 1;
