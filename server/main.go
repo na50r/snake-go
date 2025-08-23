@@ -28,6 +28,7 @@ func (c *Client) read() {
     for {
         _, m, err := c.socket.ReadMessage()
         if err != nil {
+			log.Println("Error reading message:", err)
             return
         }
 		var msg Message
@@ -164,7 +165,7 @@ func (r *Room) run() {
 			go checkDeath(r.snakes, r.death)
             gameMap := createDelta(r.snakes, r.food)
             data, _ := json.Marshal(Message{Type: "map", Payload: gameMap})
-			//log.Printf("Sending %d bytes", len(data))
+			log.Printf("Sending %d bytes", len(data))
             for cli := range r.clients {
                 select {
                 case cli.receive <- data:
