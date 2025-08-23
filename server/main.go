@@ -163,6 +163,7 @@ func (r *Room) run() {
 			go checkDeath(r.snakes, r.death)
             gameMap := drawMap(r.snakes, r.food)
             data, _ := json.Marshal(Message{Type: "map", Payload: gameMap})
+			log.Printf("Sending %d bytes len(data)", len(data))
             for cli := range r.clients {
                 select {
                 case cli.receive <- data:
