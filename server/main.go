@@ -1,9 +1,10 @@
 package main
 
 import (
-	"encoding/json"
 	"log"
 	"net/http"
+	"google.golang.org/protobuf/proto"
+	"github.com/na50r/snake-go/models"
 
 	"github.com/gorilla/websocket"
 	"math/rand"
@@ -31,16 +32,16 @@ func (c *Client) read() {
 			log.Println("Error reading message:", err)
             return
         }
-		var msg Message
-        if err := json.Unmarshal(m, &msg); err != nil {
+		var msg models.Message
+        if err := proto.Unmarshal(m, &msg); err != nil {
 			log.Println("Error unmarshalling message:", err)
             continue
         }
 		if msg.Type == "positions" {
-			raw := msg.Payload.([]interface{})
-			positions := make([]int, len(raw))
-			for i, v := range raw {
-				positions[i] = int(v.(float64)) 
+			pos := msg.GetIntList().GetBody()
+			positions := make([]int, len(pos))
+			for i, v := range pos {
+				positions[i] = int(v)
 			}
 			c.room.update <- snakeUpdate{c, positions}
 		}
@@ -50,7 +51,7 @@ func (c *Client) read() {
 func (c *Client) write() {
 	defer c.socket.Close()
 	for msg := range c.receive {
-		err := c.socket.WriteMessage(1, msg)
+		err := c.socket.WriteMessage(websocket.BinaryMessage, msg)
 		if err != nil {
 			return
 		}
@@ -78,6 +79,9 @@ func (f *Food) check(snakes map[*Client][]int, eaten chan *Client) {
 
 
 func checkDeath(snakes map[*Client][]int, death chan *Client) {
+	if len(snakes) < 1 {
+		return
+	}
 	for cli, positions := range snakes {
 		head := positions[0]
 		for other, positions := range snakes {
@@ -146,6 +150,25 @@ func createDelta(snakes map[*Client][]int, food *Food) *Delta {
 	return &Delta{Food: food.position, Snakes: snakePositions}
 }
 
+func toInt32Slice(slice []int) []int32 {
+    result := make([]int32, len(slice))
+    for i, v := range slice {
+        result[i] = int32(v)
+    }
+    return result
+}
+
+func createMapMsg(d *Delta) *models.Message {
+	msg := &models.Message{Type: "map"}
+	gameState := &models.GameState{Food: int32(d.Food)}
+	for _, snake := range d.Snakes {
+		gameState.Snakes = append(gameState.Snakes, &models.Snake{Body: toInt32Slice(snake)})
+	}
+	msg.Payload = &models.Message_ObjectData{ObjectData: gameState}
+	return msg
+
+}
+
 func (r *Room) run() {
     for {
         select {
@@ -164,7 +187,8 @@ func (r *Room) run() {
 			go r.food.check(r.snakes, r.eaten)
 			go checkDeath(r.snakes, r.death)
             gameMap := createDelta(r.snakes, r.food)
-            data, _ := json.Marshal(Message{Type: "map", Payload: gameMap})
+			msg := createMapMsg(gameMap)
+			data, _ := proto.Marshal(msg)
 			log.Printf("Sending %d bytes", len(data))
             for cli := range r.clients {
                 select {
@@ -175,7 +199,8 @@ func (r *Room) run() {
 		case cli := <-r.eaten:
 			log.Printf("Food eaten %v", cli)
 			r.food.generate(32 * 32)
-			data, _ := json.Marshal(Message{Type: "grow", Payload: nil})
+			msg := &models.Message{Type: "grow"}
+			data, _ := proto.Marshal(msg)
 			select {
 				case cli.receive <- data:
 				default:
@@ -183,7 +208,8 @@ func (r *Room) run() {
 		case cli := <-r.death:
 			log.Printf("Snake died %v", cli)
 			delete(r.snakes, cli)
-			data, _ := json.Marshal(Message{Type: "death", Payload: nil})
+			msg := &models.Message{Type: "death"}
+			data, _ := proto.Marshal(msg)
 			select {
 				case cli.receive <- data:
 				default:

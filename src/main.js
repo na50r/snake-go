@@ -27,6 +27,9 @@ function showAlert(msg) {
   });
 }
 
+const root = await protobuf.load("server/models/types.proto");
+
+
 const app = document.getElementById('app');
 const startBtn = document.getElementById('respawn');
 const stopBtn = document.getElementById('pause');
@@ -49,6 +52,7 @@ canvas.width = GAME_WIDTH;
 canvas.height = GAME_HEIGHT;
 
 const socket = new WebSocket(import.meta.env.VITE_API);
+socket.binaryType = 'arraybuffer';
 socket.addEventListener('open', () => {
   waitMsg.remove();
   app.appendChild(canvas);
@@ -81,15 +85,25 @@ function updateMap(map, snakes, food) {
     map[i] = 0;
   }
   for (const snake of snakes) {
-    for (const idx of snake) {
+    for (const idx of snake.body) {
       map[idx] = 1;
     }
   }
   map[food] = 2;
 }
 
+function parseData(data) {
+  if (data instanceof ArrayBuffer) {
+    const buffer = new Uint8Array(data);
+    const msg = root.lookupType("Message").decode(buffer);
+    return msg;
+  }
+}
+
+
 class Game {
   constructor(socket) {
+    this.root = root;
     this.over = false;
     this.socket = socket;
     this.map = new Map(this);
@@ -100,9 +114,9 @@ class Game {
     this.inputDisplay = new InputDisplay(this);
     this.debug = false;
     this.socket.onmessage = (event) => {
-      const msg = JSON.parse(event.data);
+      const msg = parseData(event.data);
       if (msg.type === 'map') {
-        updateMap(this.map.data, msg.payload.snakes, msg.payload.food);
+        updateMap(this.map.data, msg.objectData.snakes, msg.objectData.food);
       }
       if (msg.type === 'grow') {
         this.snake.size += 1;

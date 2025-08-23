@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+option go_package = "gorilla_websocket/models";
+
+message Message {
+  string type = 1;
+
+  oneof payload {
+    Positions int_list = 3;
+    GameState object_data = 4;
+  }
+}
+
+message GameState {
+  int32 food = 1;
+  repeated Snake snakes = 2;
+}
+
+message Snake {
+  repeated int32 body = 1; // e.g. [1, 2, 3]
+}
+
+message Positions {
+  repeated int32 body = 1; // e.g. [1, 2, 3]
+}
