@@ -186,7 +186,7 @@ func (r *Room) run() {
             gameMap := createDelta(r.snakes, r.food)
 			msg := createMapMsg(gameMap)
 			data, _ := proto.Marshal(msg)
-			log.Printf("Sending %d bytes to %d clients", len(data), len(r.clients))
+			//log.Printf("Sending %d bytes to %d clients", len(data), len(r.clients))
             for cli := range r.clients {
                 select {
                 case cli.receive <- data:
