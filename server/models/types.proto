@@ -17,9 +17,9 @@ message GameState {
 }
 
 message Snake {
-  repeated int32 body = 1; // e.g. [1, 2, 3]
+  repeated int32 body = 1; 
 }
 
 message Positions {
-  repeated int32 body = 1; // e.g. [1, 2, 3]
+  repeated int32 body = 1; 
 }
