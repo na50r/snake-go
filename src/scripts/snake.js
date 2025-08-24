@@ -1,5 +1,6 @@
 import { UP, DOWN, LEFT, RIGHT } from "../scripts/input.js";
 import { ROWS, COLS } from "../main.js";
+import { MSG, POS } from "../main.js";
 
 const OPPOSITES = {
     [UP]: DOWN,
@@ -104,10 +105,8 @@ export class Snake {
                 if (this.body.length > this.size) {
                     this.body.pop();
                 }
-                const Positions = this.game.root.lookupType("Positions");
-                const positions = Positions.create({ body: this.getBody() });
-                const Message = this.game.root.lookupType("Message");
-                const msg = Message.encode({ type: "positions", positions: positions }).finish();
+                const positions = POS.create({ body: this.getBody() });
+                const msg = MSG.encode({ type: "positions", positions: positions }).finish();
                 this.game.socket.send(msg);
             }
         }

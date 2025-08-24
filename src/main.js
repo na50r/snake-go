@@ -27,8 +27,15 @@ function showAlert(msg) {
   });
 }
 
-const root = await protobuf.load("server/models/types.proto");
 
+export var MSG
+export var POS
+protobuf.load("server/models/types.proto", (err, root) => {
+  //Based on: https://github.com/protobufjs/protobuf.js/issues/1023
+  if (err) throw err;
+  MSG = root.lookupType("Message");
+  POS = root.lookupType("Positions");
+});
 
 const app = document.getElementById('app');
 const startBtn = document.getElementById('respawn');
@@ -95,15 +102,15 @@ function updateMap(map, snakes, food) {
 function parseData(data) {
   if (data instanceof ArrayBuffer) {
     const buffer = new Uint8Array(data);
-    const msg = root.lookupType("Message").decode(buffer);
+    const msg = MSG.decode(buffer);
     return msg;
+  } else {
+    throw new Error('Invalid data');
   }
 }
 
-
 class Game {
   constructor(socket) {
-    this.root = root;
     this.over = false;
     this.socket = socket;
     this.map = new Map(this);
