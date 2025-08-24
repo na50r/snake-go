@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+option go_package = "github.com/na50r/snake-go";
+
+message Message {
+  string type = 1;
+
+  oneof payload {
+    Positions positions = 3;
+    GameState state = 4;
+  }
+}
+
+message GameState {
+  int32 food = 1;
+  repeated Snake snakes = 2;
+}
+
+message Snake {
+  repeated int32 body = 1; 
+}
+
+message Positions {
+  repeated int32 body = 1; 
+}

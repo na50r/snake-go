@@ -30,7 +30,7 @@ function showAlert(msg) {
 
 export var MSG
 export var POS
-protobuf.load("server/models/types.proto", (err, root) => {
+protobuf.load("types.proto", (err, root) => {
   //Based on: https://github.com/protobufjs/protobuf.js/issues/1023
   if (err) throw err;
   MSG = root.lookupType("Message");
