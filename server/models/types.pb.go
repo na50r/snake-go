@@ -4,7 +4,7 @@
 // 	protoc        v4.25.3
 // source: models/types.proto
 
-package models
+package snake_go
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
@@ -100,11 +100,11 @@ type isMessage_Payload interface {
 }
 
 type Message_Positions struct {
-	Positions *Positions `protobuf:"bytes,3,opt,name=positions,proto3,oneof"`
+	Positions *Positions `protobuf:"bytes,2,opt,name=positions,proto3,oneof"`
 }
 
 type Message_State struct {
-	State *GameState `protobuf:"bytes,4,opt,name=state,proto3,oneof"`
+	State *GameState `protobuf:"bytes,3,opt,name=state,proto3,oneof"`
 }
 
 func (*Message_Positions) isMessage_Payload() {}
@@ -165,7 +165,7 @@ func (x *GameState) GetSnakes() []*Snake {
 
 type Snake struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Body          []int32                `protobuf:"varint,1,rep,packed,name=body,proto3" json:"body,omitempty"` // e.g. [1, 2, 3]
+	Body          []int32                `protobuf:"varint,1,rep,packed,name=body,proto3" json:"body,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -209,7 +209,7 @@ func (x *Snake) GetBody() []int32 {
 
 type Positions struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Body          []int32                `protobuf:"varint,1,rep,packed,name=body,proto3" json:"body,omitempty"` // e.g. [1, 2, 3]
+	Body          []int32                `protobuf:"varint,1,rep,packed,name=body,proto3" json:"body,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -258,9 +258,9 @@ const file_models_types_proto_rawDesc = "" +
 	"\x12models/types.proto\"x\n" +
 	"\aMessage\x12\x12\n" +
 	"\x04type\x18\x01 \x01(\tR\x04type\x12*\n" +
-	"\tpositions\x18\x03 \x01(\v2\n" +
+	"\tpositions\x18\x02 \x01(\v2\n" +
 	".PositionsH\x00R\tpositions\x12\"\n" +
-	"\x05state\x18\x04 \x01(\v2\n" +
+	"\x05state\x18\x03 \x01(\v2\n" +
 	".GameStateH\x00R\x05stateB\t\n" +
 	"\apayload\"?\n" +
 	"\tGameState\x12\x12\n" +
@@ -269,7 +269,7 @@ const file_models_types_proto_rawDesc = "" +
 	"\x05Snake\x12\x12\n" +
 	"\x04body\x18\x01 \x03(\x05R\x04body\"\x1f\n" +
 	"\tPositions\x12\x12\n" +
-	"\x04body\x18\x01 \x03(\x05R\x04bodyB\x1aZ\x18gorilla_websocket/modelsb\x06proto3"
+	"\x04body\x18\x01 \x03(\x05R\x04bodyB\x1bZ\x19github.com/na50r/snake-gob\x06proto3"
 
 var (
 	file_models_types_proto_rawDescOnce sync.Once

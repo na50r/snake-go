@@ -6,8 +6,8 @@ message Message {
   string type = 1;
 
   oneof payload {
-    Positions positions = 3;
-    GameState state = 4;
+    Positions positions = 2;
+    GameState state = 3;
   }
 }
 
