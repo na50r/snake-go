@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "gorilla_websocket/models";
+option go_package = "github.com/na50r/snake-go";
 
 message Message {
   string type = 1;
