@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 	"google.golang.org/protobuf/proto"
-	"github.com/na50r/snake-go/models"
+	models "github.com/na50r/snake-go/models"
 
 	"github.com/gorilla/websocket"
 	"math/rand"
