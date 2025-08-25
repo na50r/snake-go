@@ -11,7 +11,7 @@ export class Camera {
         this.y = 0;
         this.maxX = this.map.cols * this.map.tileSize - this.width;
         this.maxY = this.map.rows * this.map.tileSize - this.height;
-        this.speed = 256;
+        this.speed = 128;
     }
     move(deltaTime, speedX, speedY) {
         this.x += speedX * this.speed * deltaTime;
@@ -19,7 +19,7 @@ export class Camera {
         this.x = Math.max(0, Math.min(this.x, this.maxX));
         this.y = Math.max(0, Math.min(this.y, this.maxY));
     }
-    update(deltaTime) {
+    oldUpdate(deltaTime) {
         var speedX = 0;
         var speedY = 0;
         if (this.input.lastKey === UP) {
@@ -32,5 +32,12 @@ export class Camera {
             speedX = 1;
         }
         this.move(deltaTime, speedX, speedY);
+    }
+    update(deltaTime) {
+        const hero = this.game.hero;
+        this.x = hero.position.x + hero.width / 2 - this.width / 2;
+        this.y = hero.position.y + hero.height / 2 - this.height / 2;
+        this.x = Math.max(0, Math.min(this.x, this.maxX));
+        this.y = Math.max(0, Math.min(this.y, this.maxY));
     }
 }

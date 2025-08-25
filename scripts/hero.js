@@ -22,8 +22,6 @@ export class Hero extends GameObject {
         const distance = this.moveTowards(this.destinationPosition, scaledSpeed)
         const arrived = distance <= scaledSpeed;
 
-
-
         if (arrived) {
             if (this.game.input.lastKey === UP) {
                 nextY -= TILE_SIZE;
