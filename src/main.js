@@ -45,9 +45,6 @@ waitMsg.innerText = 'Waiting for server...';
 waitMsg.classList.add('waitMsg');
 app.appendChild(waitMsg);
 
-const canvas = document.createElement('canvas');
-canvas.id = 'canvasX';
-const ctx = canvas.getContext('2d');
 
 export const COLS = 32
 export const ROWS = 32
@@ -55,14 +52,11 @@ export const TILE_SIZE = 16;
 export const GAME_WIDTH = COLS * TILE_SIZE;
 export const GAME_HEIGHT = ROWS * TILE_SIZE;
 
-canvas.width = GAME_WIDTH;
-canvas.height = GAME_HEIGHT;
 
 const socket = new WebSocket(import.meta.env.VITE_API);
 socket.binaryType = 'arraybuffer';
 socket.addEventListener('open', () => {
   waitMsg.remove();
-  app.appendChild(canvas);
 });
 
 socket.addEventListener('close', () => {
@@ -163,7 +157,7 @@ function setupJoystick(game) {
   game.inputDisplay.getKeys().forEach(el => app.append(el));
 }
 
-function createGameLoop() {
+function createGameLoop(ctx) {
   const game = new Game(socket);
   const gameLoop = (timeStamp) => {
     aniID = requestAnimationFrame(gameLoop);
@@ -179,7 +173,12 @@ function createGameLoop() {
 }
 
 window.addEventListener('load', () => {
-  currentState = createGameLoop();
+  const canvas = document.getElementById('canvasX');
+  canvas.width = GAME_WIDTH;
+  canvas.height = GAME_HEIGHT;
+  const ctx = canvas.getContext('2d');
+  ctx.imageSmoothingEnabled = false;
+  currentState = createGameLoop(ctx);
   requestAnimationFrame(currentState.loop);
   setupJoystick(currentState.game);
 

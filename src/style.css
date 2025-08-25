@@ -31,6 +31,8 @@ body {
   height: 95vmin;
   max-width: 512px;
   max-height: 512px;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
 }
 
 #app {
