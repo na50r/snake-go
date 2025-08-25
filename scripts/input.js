@@ -4,7 +4,8 @@ export const UP = "UP";
 export const DOWN = "DOWN";
 
 export class Input {
-    constructor() {
+    constructor(game) {
+        this.game = game;
         this.keys = [];
         window.addEventListener("keydown", e => {
             if (e.key === "ArrowUp" || e.key.toLowerCase() === "w") {
