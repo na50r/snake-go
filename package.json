@@ -6,9 +6,25 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "nw-dev": "nw .",
+    "nw-prod": "nwbuild --platform win --arch x64 --outDir ../build-dist/ --glob=false ."
+  },
+  "main": "index.html",
+  "window": {
+    "title": "Snake",
+    "icon": "",
+    "width": 512,
+    "height": 768,
+    "min_width": 512,
+    "min_height": 512,
+    "max_width": 512,
+    "max_height": 768,
+    "position": "mouse"
   },
   "devDependencies": {
+    "nw": "^0.70.0-sdk",
+    "nw-builder": "^4.15.0",
     "vite": "^7.1.2"
   },
   "dependencies": {

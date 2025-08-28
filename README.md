@@ -2,22 +2,15 @@
 This is an attempt to make a snake multi-player game. Mainly because snake seemed to be easy and I used it an excuse to work with WebSockets.
 
 ## Usage
-Start the server with
-```bash
-go run main.go
+```sh
+npm install
+npm run dev       #Dev on browser
+npm run nw-dev    #Dev on nw.js
+npm run build     #Build for production
+npm run nw-prod   #Create an executable
 ```
-Then run the client with VSCode Live Server extension or alike. 
-
-## Frontend
-* HTML (especially canvas)
-* CSS
-* JavaScript
-
-## Backend
-* Go
-* WebSockets (Gorilla)
-
 
 ## References
-* [Gorilla WebSockets](https://www.youtube.com/watch?v=y036l6pvVEs)
 * [PixelArt Game Dev (Tiles, Movement)](https://www.youtube.com/watch?v=3OpjL1cFMtg)
+* [How to use NW.js](https://www.youtube.com/watch?v=5UsGnjPYxLU)
+* [Setting up NWBuilder](https://github.com/nwutils/nw-builder/issues/899)
